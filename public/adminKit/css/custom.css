@@ -1,0 +1,35 @@
+:root{
+    --primary-custom: #1C9275;
+    --green10: #D2E9E3;
+    --green20: #B3DBD1;
+    --green30: #8DC8BA;
+    --green40: #68B6A3;
+    --green50: #42A48C;
+    --green60: #177A62;
+    --green70: #13614E;
+    --green80: #0E493B;
+    --green90: #093127;
+    --green100: #061D17;
+    --secondary-custom: #F2B705; 
+}
+
+ .sidebar-content,
+ a.sidebar-link {
+    background: var(--green100);
+ }
+
+ .sidebar-item.active .sidebar-link:hover,
+ .sidebar-item.active > .sidebar-link {
+    background: linear-gradient(
+     90deg,
+     rgba(242,183,5, 0.1),
+     rgba(242,183,5, 0.088) 50%,
+     transparent
+   );
+    border-left-color: var(--secondary-custom);
+ }
+
+ .sidebar-link:hover {
+    background:var(--green100);
+ }
+ 
