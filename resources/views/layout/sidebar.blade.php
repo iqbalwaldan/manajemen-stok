@@ -2,8 +2,9 @@
     <div class="sidebar-content js-simplebar">
         <a class="sidebar-brand" href="/dashboard">
             {{-- <span class="align-middle">AdminKit</span> --}}
-            <img src="{{ asset('adminKit/img/brand/logo-uplift-market-white.png') }}" alt=""
-                style="width: 200px">
+            <img src="{{ asset('adminKit/img/brand/features1.png') }}" alt=""
+                style="width: 50px">
+            <h3 style="color:white; font-size:30px; font-weight: bold; margin: 0px;">STOCK</h3>
         </a>
 
         <ul class="sidebar-nav">
@@ -17,20 +18,34 @@
                         class="align-middle">Dashboard</span>
                 </a>
             </li>
-
             <li class="sidebar-item {{ Request::is('product*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="/product">
-                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Product</span>
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Produk</span>
                 </a>
             </li>
-            <li class="sidebar-item {{ Request::is('in*') ? 'active' : '' }}">
-                <a class="sidebar-link" href="/in">
-                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">In</span>
+            <li class="sidebar-item {{ Request::is('type*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="/type">
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Tipe Produk</span>
                 </a>
             </li>
-            <li class="sidebar-item {{ Request::is('out*') ? 'active' : '' }}">
-                <a class="sidebar-link" href="/out">
-                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Out</span>
+            <li class="sidebar-item {{ Request::is('incoming*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="/incoming">
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Produk Masuk</span>
+                </a>
+            </li>
+            <li class="sidebar-item {{ Request::is('outgoing*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="/outgoing">
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Produk Keluar</span>
+                </a>
+            </li>
+            <li class="sidebar-item {{ Request::is('stock*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="/stock">
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Balance Stok</span>
+                </a>
+            </li>
+            <li class="sidebar-item {{ Request::is('report*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="/report">
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Report</span>
                 </a>
             </li>
         </ul>

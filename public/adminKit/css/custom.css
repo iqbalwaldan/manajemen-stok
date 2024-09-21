@@ -1,35 +1,103 @@
-:root{
-    --primary-custom: #1C9275;
-    --green10: #D2E9E3;
-    --green20: #B3DBD1;
-    --green30: #8DC8BA;
-    --green40: #68B6A3;
-    --green50: #42A48C;
-    --green60: #177A62;
-    --green70: #13614E;
-    --green80: #0E493B;
+:root {
+    --primary-custom: #1c9275;
+    --green10: #d2e9e3;
+    --green20: #b3dbd1;
+    --green30: #8dc8ba;
+    --green40: #68b6a3;
+    --green50: #42a48c;
+    --green60: #177a62;
+    --green70: #13614e;
+    --green80: #0e493b;
     --green90: #093127;
-    --green100: #061D17;
-    --secondary-custom: #F2B705; 
+    --green100: #061d17;
+    --secondary-custom: #f2b705;
 }
 
- .sidebar-content,
- a.sidebar-link {
+.sidebar-content,
+a.sidebar-link {
     background: var(--green100);
- }
+}
 
- .sidebar-item.active .sidebar-link:hover,
- .sidebar-item.active > .sidebar-link {
+.sidebar-item.active .sidebar-link:hover,
+.sidebar-item.active > .sidebar-link {
     background: linear-gradient(
-     90deg,
-     rgba(242,183,5, 0.1),
-     rgba(242,183,5, 0.088) 50%,
-     transparent
-   );
+        90deg,
+        rgba(242, 183, 5, 0.1),
+        rgba(242, 183, 5, 0.088) 50%,
+        transparent
+    );
     border-left-color: var(--secondary-custom);
- }
+}
 
- .sidebar-link:hover {
-    background:var(--green100);
- }
- 
+.sidebar-link:hover {
+    background: var(--green100);
+}
+
+div.form-group {
+    margin: 0 0 12px 0 !important;
+}
+
+.custom-tom-select .ts-control {
+    padding: 6.4px 0 6.4px 16px;
+    border-radius: 0.3rem;
+    font-size: 50px !important;
+}
+
+.custom-tom-select.empty .ts-control {
+    border: 1px solid #dc3545;
+}
+
+.custom-tom-select.filled .ts-control {
+    border: 1px solid #1cbb8c;
+}
+
+.custom-tom-select.empty.focus .ts-control {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.25) !important;
+}
+
+.custom-tom-select.filled.focus .ts-control {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(28, 187, 140, 0.25) !important;
+}
+
+.custom-tom-select .item {
+    font-size: 0.925rem !important;
+    padding: 2px 0px !important;
+    color: #495057 !important;
+}
+
+#incoming-name-ts-control {
+    font-size: 0.925rem !important;
+    padding: 2px 0px !important;
+    color: #495057 !important;
+    font-weight: 400 !important;
+}
+
+.valid-logo {
+    position: absolute;
+    top: 38px !important;
+    right: 10px !important;
+    font-size: 18px !important;
+    color: #dc3545 !important;
+    font-weight: 500 !important;
+    z-index: 2;
+}
+
+.invalid-logo {
+    position: absolute;
+    top: 36px !important;
+    right: 10px !important;
+    font-size: 24px !important;
+    color: #198754 !important;
+    font-weight: 900 !important;
+    z-index: 3;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.form-group-custom {
+    position: relative;
+}
