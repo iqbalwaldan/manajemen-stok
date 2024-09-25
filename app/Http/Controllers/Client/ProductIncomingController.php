@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductIncoming;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -12,31 +13,37 @@ class ProductIncomingController extends Controller
 {
     public function index(Request $request)
     {
-        $productIncoming = ProductIncoming::with('product')->latest();
+        $productIncoming = ProductIncoming::with('product')
+            ->orderBy('datetime_incoming', 'desc')
+            ->orderBy('product_id', 'desc')
+            ->get();
 
         if ($request->ajax()) {
             return DataTables::of($productIncoming)
                 ->addIndexColumn()
                 ->editColumn('datetime_incoming', function ($incoming) {
-                    return $incoming->datetime_incoming->format('Y-m-d');
+                    return Carbon::parse($incoming->datetime_incoming)->format('d-m-Y');
                 })
                 ->editColumn('product_id', function ($incoming) {
-                    return $incoming->product->name;
+                    return $incoming->product->name . $incoming->product->id;
+                })
+                ->editColumn('stock_in', function ($incoming) {
+                    return (string)$incoming->stock_in;
                 })
                 ->editColumn('price', function ($incoming) {
-                    return 'Rp ' . number_format($incoming->price, 0, ',', '.');
+                    return (string)$incoming->price;
                 })
                 ->editColumn('total_price', function ($incoming) {
-                    return 'Rp ' . number_format($incoming->total_price, 0, ',', '.');
+                    return (string)$incoming->total_price;
                 })
                 ->editColumn('dp', function ($incoming) {
-                    return 'Rp ' . number_format($incoming->dp, 0, ',', '.');
+                    return (string)$incoming->dp;
+                })
+                ->editcolumn('payment_status', function ($incoming) {
+                    return $incoming->payment_status == 'Lunas' ? 'Lunas' : 'Belum Lunas';
                 })
                 ->editColumn('paid_off', function ($incoming) {
-                    return 'Rp ' . number_format($incoming->paid_off, 0, ',', '.');
-                })
-                ->editColumn('payment_status', function ($incoming) {
-                    return $incoming->payment_status ? 'Lunas' : 'Belum Lunas';
+                    return (string)$incoming->paid_off;
                 })
                 ->addColumn('action', 'admin.incoming.action')
                 ->toJson();
@@ -58,7 +65,7 @@ class ProductIncomingController extends Controller
                 'total_price' => 'required|numeric',
                 'dp' => 'required|numeric',
                 'paid_off' => 'required|numeric',
-                'payment_status' => 'required|boolean',
+                'payment_status' => 'required',
                 'datetime_incoming' => 'required|date',
                 'product_id' => 'required|exists:products,id',
             ]);
@@ -66,6 +73,31 @@ class ProductIncomingController extends Controller
             $request->merge([
                 'datetime_incoming' => $request->datetime_incoming . ' ' . now()->format('H:i:s'),
             ]);
+
+            if ($request->stock_in < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stock in tidak boleh kurang dari 0',
+                ], 400);
+            }
+            if ($request->price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga in tidak boleh kurang dari 0',
+                ], 400);
+            }
+            if ($request->dp < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'DP in tidak boleh kurang dari 0',
+                ], 400);
+            }
+            if ($request->paid_off < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'DP melebihi total harus dibayar',
+                ], 400);
+            }
 
             ProductIncoming::create($request->all());
 
@@ -95,7 +127,7 @@ class ProductIncomingController extends Controller
                 'total_price' => 'required|numeric',
                 'dp' => 'required|numeric',
                 'paid_off' => 'required|numeric',
-                'payment_status' => 'required|boolean',
+                'payment_status' => 'required',
                 'datetime_incoming' => 'required|date',
                 'product_id' => 'required|exists:products,id',
             ]);
@@ -104,7 +136,38 @@ class ProductIncomingController extends Controller
                 'datetime_incoming' => $request->datetime_incoming . ' ' . now()->format('H:i:s'),
             ]);
 
+            if ($request->stock_in < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stock in tidak boleh kurang dari 0',
+                ], 400);
+            }
+            if ($request->price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga in tidak boleh kurang dari 0',
+                ], 400);
+            }
+            if ($request->dp < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'DP in tidak boleh kurang dari 0',
+                ], 400);
+            }
+            if ($request->paid_off < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'DP melebihi total harus dibayar',
+                ], 400);
+            }
+
+            $product = Product::find($incoming->product_id);
+            $product->stock -= $incoming->stock_in;
+
             $incoming->update($request->all());
+
+            $product->stock += $request->stock_in;
+            $product->save();
 
             return response()->json([
                 'title' => 'Success!',
@@ -121,6 +184,9 @@ class ProductIncomingController extends Controller
     public function destroy(ProductIncoming $incoming)
     {
         try {
+            $product = Product::find($incoming->product_id);
+            $product->stock -= $incoming->stock_in;
+            $product->save();
             $incoming->delete();
             return response()->json([
                 'title' => 'Success!',

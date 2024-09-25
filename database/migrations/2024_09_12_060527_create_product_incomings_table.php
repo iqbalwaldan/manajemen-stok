@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('total_price');
             $table->integer('dp');
             $table->integer('paid_off');
-            $table->boolean('payment_status');
+            $table->enum('payment_status', ['Belum', 'Lunas']);
             $table->dateTime('datetime_incoming');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onUpdate('cascade')->onDelete('cascade');

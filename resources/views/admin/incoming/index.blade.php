@@ -11,7 +11,7 @@
     <div class="ml-[60px] md:ml-64">
         <div class="mb-4" style="display: flex; justify-content: end">
             <button type="button" id="button-add-product-incoming" class="btn btn-primary">
-                Add Product Incoming
+                Tambah Produk Masuk
             </button>
         </div>
         <div class="">
@@ -79,13 +79,13 @@
                             <div class="form-group">
                                 <label for="incoming-stock-in">Stok Masuk</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-stock-in"
-                                    placeholder="Masukkan stok masuk" required>
+                                    placeholder="Masukkan stok masuk" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="incoming-price">Harga</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-price"
-                                    placeholder="Masukkan harga" required>
+                                    placeholder="Masukkan harga" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
@@ -96,15 +96,15 @@
                             <div class="form-group">
                                 <label for="incoming-dp">DP</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-dp"
-                                    placeholder="Masukkan dp" required>
+                                    placeholder="Masukkan dp" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="incoming-payment-status">Status Pembayaran</label>
                                 <select class="form-control form-control-md" id="incoming-payment-status" required>
                                     <option value="">-- Pilih Status Pembayaran --</option>
-                                    <option value="1">Lunas</option>
-                                    <option value="0">Belum Lunas</option>
+                                    <option value="2">Lunas</option>
+                                    <option value="1">Belum Lunas</option>
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
@@ -171,13 +171,13 @@
                             <div class="form-group">
                                 <label for="edit-incoming-stock-in">Stok Masuk</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-stock-in"
-                                    placeholder="Masukkan stok masuk" required>
+                                    placeholder="Masukkan stok masuk" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-incoming-price">Harga</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-price"
-                                    placeholder="Masukkan harga" required>
+                                    placeholder="Masukkan harga" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
@@ -188,15 +188,15 @@
                             <div class="form-group">
                                 <label for="edit-incoming-dp">DP</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-dp"
-                                    placeholder="Masukkan dp" required>
+                                    placeholder="Masukkan dp" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-incoming-payment-status">Status Pembayaran</label>
                                 <select class="form-control form-control-md" id="edit-incoming-payment-status" required>
                                     <option value="">-- Pilih Status Pembayaran --</option>
-                                    <option value="1">Lunas</option>
-                                    <option value="0">Belum Lunas</option>
+                                    <option value="2">Lunas</option>
+                                    <option value="1">Belum Lunas</option>
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
@@ -240,40 +240,73 @@
                     },
                     {
                         data: 'datetime_incoming',
-                        name: 'datetime_incoming'
+                        name: 'datetime_incoming',
+                        searchable: true,
+                        orderable: true
                     },
                     {
                         data: 'product_id',
-                        name: 'product_id'
+                        name: 'product_id',
+                        searchable: true,
+                        orderable: true,
+                        render: function(data, type, row) {
+                            return '<span class="badge badge-primary p-2" style="min-width: 30px;">' +
+                            row.product.id + '</span> ' + row.product.name;
+                        }
                     },
                     {
                         data: 'stock_in',
-                        name: 'stock_in'
+                        name: 'stock_in',
+                        searchable: true,
+                        orderable: true
                     },
                     {
                         data: 'price',
-                        name: 'price'
+                        name: 'price',
+                        searchable: true,
+                        orderable: true,
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'total_price',
-                        name: 'total_price'
+                        name: 'total_price',
+                        searchable: true,
+                        orderable: true,
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'dp',
-                        name: 'dp'
+                        name: 'dp',
+                        searchable: true,
+                        orderable: true,
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'payment_status',
-                        name: 'payment_status'
+                        name: 'payment_status',
+                        searchable: true,
+                        orderable: true,
+                        render: function(data) {
+                            if (data == "Belum Lunas") {
+                                return '<span class="badge badge-danger p-2" style="min-width: 30px;">' +
+                                    data + '</span>';
+                            } else {
+                                return '<span class="badge badge-success p-2" style="min-width: 30px;">' +
+                                    data + '</span>';
+                            }
+                        }
                     },
                     {
                         data: 'paid_off',
                         name: 'paid_off',
+                        searchable: true,
+                        orderable: true,
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         width: '160px',
                         data: 'action',
-                        name: 'action'
+                        name: 'action',
                     },
                 ]
             });
@@ -405,16 +438,21 @@
             $(document).on('click', '.button-edit-product-incoming', function() {
                 selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
 
-                $('#edit-incoming-date').val(selectedData.datetime_incoming);
+                let date = selectedData.datetime_incoming;
+                let dateParts = date.split('-'); // Memisahkan string berdasarkan '-'
+                let formattedDate =
+                    `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // Menggabungkan kembali dengan format yyyy-mm-dd
+
+                $('#edit-incoming-date').val(formattedDate); // Set nilai pada input tanggal
                 tomSelectEditProductIncome.setValue(selectedData.product.id);
                 $('#edit-incoming-stock-in').val(selectedData.stock_in);
                 $('#edit-incoming-price').val(selectedData.price);
                 $('#edit-incoming-total-price').val(selectedData.total_price);
                 $('#edit-incoming-dp').val(selectedData.dp);
                 if (selectedData.payment_status == 'Belum Lunas') {
-                    selectedData.payment_status = 0;
-                } else {
                     selectedData.payment_status = 1;
+                } else {
+                    selectedData.payment_status = 2;
                 }
                 $('#edit-incoming-payment-status').val(selectedData.payment_status);
                 $('#edit-incoming-paid-off').val(selectedData.paid_off);
