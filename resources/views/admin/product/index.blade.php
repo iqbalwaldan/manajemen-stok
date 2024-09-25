@@ -69,13 +69,13 @@
                             <div class="form-group">
                                 <label for="product-price">Harga Produk</label>
                                 <input type="number" class="form-control form-control-lg" id="product-price"
-                                    placeholder="Masukkan harga produk" required>
+                                    placeholder="Masukkan harga produk" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="product-stock">Stok Produk</label>
                                 <input type="number" class="form-control form-control-lg" id="product-stock"
-                                    placeholder="Masukkan stok produk" required>
+                                    placeholder="Masukkan stok produk" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="modal-footer">
@@ -126,13 +126,13 @@
                             <div class="form-group">
                                 <label for="edit-product-price">Harga Produk</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-product-price"
-                                    placeholder="Masukkan harga produk" required>
+                                    placeholder="Masukkan harga produk" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-product-stock">Stok Produk</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-product-stock"
-                                    placeholder="Masukkan stok produk" required>
+                                    placeholder="Masukkan stok produk" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="modal-footer">
@@ -191,12 +191,7 @@
                         name: 'price',
                         searchable: true,
                         orderable: true,
-                        render: function(data, type, row) {
-                            return 'Rp ' + parseInt(data).toLocaleString('id-ID', {
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0
-                            });
-                        },
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
 
                     },
                     {
