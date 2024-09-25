@@ -59,20 +59,14 @@
                             </div>
                             <div class="form-group form-group-custom">
                                 <label for="incoming-product-name">Nama Produk</label>
-                                <span id="valo" class="material-symbols-rounded valid-logo">
-                                    error
-                                </span>
-                                <span id="invalo" class="material-symbols-rounded invalid-logo hidden">
-                                    check
-                                </span>
-                                <select class="custom-tom-select
-                                    empty"
-                                    id="incoming-product-name" required>
+                                <span id="valo" class="material-symbols-rounded valid-logo">error</span>
+                                <span id="invalo" class="material-symbols-rounded invalid-logo hidden">check</span>
+                                <select class="custom-tom-select empty" id="incoming-product-name" required>
                                     <option value="">Pilih produk</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->id }})
+                                        </option>
                                     @endforeach
-
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
@@ -162,9 +156,9 @@
                                     id="edit-incoming-product-name" required>
                                     <option value="">Pilih produk</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->id }})
+                                        </option>
                                     @endforeach
-
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
@@ -251,7 +245,7 @@
                         orderable: true,
                         render: function(data, type, row) {
                             return '<span class="badge badge-primary p-2" style="min-width: 30px;">' +
-                            row.product.id + '</span> ' + row.product.name;
+                                row.product.id + '</span> ' + row.product.name;
                         }
                     },
                     {
@@ -333,6 +327,11 @@
                 }
             });
 
+            function dateNow() {
+                let date = new Date();
+                return date.toISOString().split('T')[0];
+            }
+
             function calculateTotalPrice() {
                 let price = $('#incoming-price').val();
                 let stockIn = $('#incoming-stock-in').val();
@@ -347,6 +346,12 @@
                 let dp = $('#incoming-dp').val();
                 let paidOff = totalPrice - dp;
                 $('#incoming-paid-off').val(paidOff);
+                $('#incoming-dp').attr('max', totalPrice);
+                if (paidOff == 0) {
+                    $('#incoming-payment-status').val(2);
+                } else {
+                    $('#incoming-payment-status').val(1);
+                }
             }
             $('#incoming-dp').on('input', calculatePaidOff);
 
@@ -404,6 +409,7 @@
             });
 
             $('#button-add-product-incoming').on('click', function() {
+                $('#incoming-date').val(dateNow());
                 $('#modalAddProductIncoming').modal('show');
             });
             $('#button-x-add-product-incoming').on('click', function() {
@@ -473,6 +479,12 @@
                 let dp = $('#edit-incoming-dp').val();
                 let paidOff = totalPrice - dp;
                 $('#edit-incoming-paid-off').val(paidOff);
+                $('#edit-incoming-dp').attr('max', totalPrice);
+                if (paidOff == 0) {
+                    $('#edit-incoming-payment-status').val(2);
+                } else {
+                    $('#edit-incoming-payment-status').val(1);
+                }
             }
             $('#edit-incoming-dp').on('input', calculateEditPaidOff);
 

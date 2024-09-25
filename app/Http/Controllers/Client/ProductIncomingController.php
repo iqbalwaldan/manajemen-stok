@@ -14,8 +14,8 @@ class ProductIncomingController extends Controller
     public function index(Request $request)
     {
         $productIncoming = ProductIncoming::with('product')
-            ->orderBy('datetime_incoming', 'desc')
-            ->orderBy('product_id', 'desc')
+            ->orderByRaw('DATE(datetime_incoming) DESC')
+            ->orderBy('product_id', 'DESC')
             ->get();
 
         if ($request->ajax()) {
@@ -163,9 +163,13 @@ class ProductIncomingController extends Controller
 
             $product = Product::find($incoming->product_id);
             $product->stock -= $incoming->stock_in;
-
+            $product->save();
+            
             $incoming->update($request->all());
 
+            if($product->id != $request->product_id){
+                $product = Product::find($request->product_id);
+            }
             $product->stock += $request->stock_in;
             $product->save();
 
