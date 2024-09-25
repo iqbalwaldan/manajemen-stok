@@ -42,7 +42,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="exampleModalLongTitle">Tambah Produk Masuk</h4>
+                        <h4 class="modal-title" id="exampleModalLongTitle">Tambah Produk Keluar</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             id="button-x-add-product-outgoing">
                             <span aria-hidden="true">&times;</span>
@@ -78,7 +78,8 @@
                                     id="outgoing-product-name" required>
                                     <option value="">Pilih produk</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->id }})
+                                        </option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
@@ -86,19 +87,19 @@
                             <div class="form-group">
                                 <label for="outgoing-stock-out">Stok Keluar</label>
                                 <input type="number" class="form-control form-control-lg" id="outgoing-stock-out"
-                                    placeholder="Masukkan stok keluar" required>
+                                    placeholder="Masukkan stok keluar" min="1" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="outgoing-purchase-price">Harga Beli</label>
                                 <input type="number" class="form-control form-control-lg" id="outgoing-purchase-price"
-                                    placeholder="Masukkan harga beli" required>
+                                    placeholder="Masukkan harga beli" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="outgoing-selling-price">Harga Jual</label>
                                 <input type="number" class="form-control form-control-lg" id="outgoing-selling-price"
-                                    placeholder="Masukkan harga jual" required>
+                                    placeholder="Masukkan harga jual" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
@@ -168,7 +169,8 @@
                                     id="edit-outgoing-product-name" required>
                                     <option value="">Pilih produk</option>
                                     @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->id }})
+                                        </option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
@@ -289,7 +291,7 @@
                         $('#invalo').removeClass('hidden');
                         if (value) {
                             $.ajax({
-                                url: '/product-data', 
+                                url: '/product-data',
                                 type: 'GET',
                                 data: {
                                     id: value,
@@ -310,6 +312,11 @@
                     }
                 }
             });
+            
+            function dateNow() {
+                let date = new Date();
+                return date.toISOString().split('T')[0];
+            }
 
             function calculateTotalPrice() {
                 let sellingPrice = $('#outgoing-selling-price').val();
@@ -383,6 +390,7 @@
             });
 
             $('#button-add-product-outgoing').on('click', function() {
+                $('#outgoing-date').val(dateNow());
                 $('#modalAddProductOutgoing').modal('show');
             });
             $('#button-x-add-product-outgoing').on('click', function() {

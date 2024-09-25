@@ -12,8 +12,8 @@ class ProductOutgoingController extends Controller
 {
     public function index(Request $request)
     {
+        $productOutgoing = ProductOutgoing::with('product')->latest();
         if ($request->ajax()) {
-            $productOutgoing = ProductOutgoing::with('product')->latest();
             return DataTables::of($productOutgoing)
                 ->addIndexColumn()
                 ->editColumn('datetime_transaction', function ($outgoing) {
@@ -63,17 +63,37 @@ class ProductOutgoingController extends Controller
                 'datetime_transaction' => $request->datetime_transaction . ' ' . now()->format('H:i:s'),
             ]);
 
-            $product = Product::find($request->product_id);
-            $product->stock -= $request->stock_out;
-            if ($product->stock < 0) {
+            if ($request->stock_out < 1) {
                 return response()->json([
                     'title' => 'Opss...',
-                    'message' => 'Stock tidak boleh kurang dari 0',
+                    'message' => 'Stock tidak boleh kurang dari 1',
                 ], 400);
-            } else {
-                ProductOutgoing::create($request->all());
-                $product->save();
             }
+            if ($request->purchase_price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga beli tidak boleh kurang dari 1',
+                ], 400);
+            }
+            if ($request->selling_price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga jual tidak boleh kurang dari 1',
+                ], 400);
+            }
+
+            $product = Product::find($request->product_id);
+            if ($product->stock < $request->stock_out) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stok barang tidak mencukupi',
+                ], 400);
+            }else{
+                $product->stock -= $request->stock_out;
+            }
+            
+            $product->save();
+            ProductOutgoing::create($request->all());
 
             return response()->json([
                 'title' => 'Success!',

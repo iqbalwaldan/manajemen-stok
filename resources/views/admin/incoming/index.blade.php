@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <label for="incoming-stock-in">Stok Masuk</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-stock-in"
-                                    placeholder="Masukkan stok masuk" min="0" required>
+                                    placeholder="Masukkan stok masuk" min="1" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
@@ -165,7 +165,7 @@
                             <div class="form-group">
                                 <label for="edit-incoming-stock-in">Stok Masuk</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-stock-in"
-                                    placeholder="Masukkan stok masuk" min="0" required>
+                                    placeholder="Masukkan stok masuk" min="1" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
