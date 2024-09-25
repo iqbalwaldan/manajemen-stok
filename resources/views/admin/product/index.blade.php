@@ -20,6 +20,7 @@
                     <thead>
                         <tr>
                             <th scope="col">No</th>
+                            <th scope="col">Id</th>
                             <th scope="col">Nama</th>
                             <th scope="col">Tipe</th>
                             <th scope="col">Harga</th>
@@ -158,33 +159,58 @@
                 ajax: "/product",
                 columns: [{
                         data: null,
-                        searchable: false,
-                        orderable: false,
                         width: 100,
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
                     {
+                        data: 'id',
+                        name: 'id',
+                        searchable: true,
+                        orderable: true,
+                        render: function(data, type, row) {
+                            return '<span class="badge badge-primary p-2" style="min-width: 30px;">' +
+                                data + '</span>';
+                        }
+                    },
+                    {
                         data: 'name',
-                        name: 'name'
+                        name: 'name',
+                        searchable: true,
+                        orderable: true
                     },
                     {
                         data: 'product_type_name',
-                        name: 'product_type_name'
+                        name: 'product_type_name',
+                        searchable: true,
+                        orderable: true
                     },
                     {
                         data: 'price',
-                        name: 'price'
+                        name: 'price',
+                        searchable: true,
+                        orderable: true,
+                        render: function(data, type, row) {
+                            return 'Rp ' + parseInt(data).toLocaleString('id-ID', {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
+                            });
+                        },
+
                     },
                     {
                         data: 'stock',
-                        name: 'stock'
+                        name: 'stock',
+                        searchable: true,
+                        orderable: true
                     },
                     {
                         width: '150px',
                         data: 'action',
-                        name: 'action'
+                        name: 'action',
+                        searchable: false,
+                        orderable: false
                     },
                 ]
             });
@@ -242,10 +268,20 @@
             $(document).on('click', '.button-edit-product', function() {
                 selectedData = $('#table-product').DataTable().row($(this).parents('tr')).data();
 
+                console.log(selectedData); // Log untuk memeriksa struktur data
+
                 $('#edit-product-name').val(selectedData.name);
                 $('#edit-product-type').val(selectedData.product_type_id);
                 $('#edit-product-price').val(selectedData.price);
                 $('#edit-product-stock').val(selectedData.stock);
+                
+                // Cek jika produk dimiliki oleh productOutgoing atau productIncoming
+                if (selectedData.productOutgoing || selectedData.productIncoming) {
+                    $('#edit-product-stock').prop('disabled', true);
+                } else {
+                    $('#edit-product-stock').prop('disabled', false);
+                }
+
                 $('#modalEditProduct').modal('show');
             });
 

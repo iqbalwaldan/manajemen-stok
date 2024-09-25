@@ -21,11 +21,23 @@ class ProductController extends Controller
         if ($request->ajax()) {
             return DataTables::of($product)
                 ->addIndexColumn()
+                ->editColumn('id', function ($product) {
+                    return (string)$product->id;
+                })
                 ->editColumn('product_type_name', function ($product) {
                     return $product->productType->name;
                 })
                 ->editColumn('price', function ($product) {
-                    return 'Rp ' . number_format($product->price, 0, ',', '.');
+                    return (string)$product->price;
+                })
+                ->editColumn('stock', function ($product) {
+                    return (string)$product->stock;
+                })
+                ->addColumn('productOutgoing', function ($product) {
+                    return $product->productOutgoing()->exists(); // Misalkan Anda memiliki relasi ini
+                })
+                ->addColumn('productIncoming', function ($product) {
+                    return $product->productIncoming()->exists(); // Misalkan Anda memiliki relasi ini
                 })
                 ->addColumn('action', 'admin.product.action')
                 ->toJson();
@@ -47,6 +59,27 @@ class ProductController extends Controller
                 'price' => 'required',
                 'stock' => 'required',
             ]);
+
+            if (Product::where('name', $request->name)->where('product_type_id', $request->product_type_id)->exists()) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Data produk sudah ada',
+                ], 400);
+            }
+
+            if ($request->stock < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stok tidak boleh kurang dari 0',
+                ], 400);
+            }
+
+            if ($request->price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga tidak boleh kurang dari 0',
+                ], 400);
+            }
 
             Product::create($request->all());
 
@@ -71,6 +104,31 @@ class ProductController extends Controller
                 'price' => 'required',
                 'stock' => 'required',
             ]);
+
+            if (Product::where('name', $request->name)
+                ->where('product_type_id', $request->product_type_id)
+                ->where('id', '!=', $product->id) // Mengecualikan produk yang sedang di-update
+                ->exists()
+            ) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Data produk sudah ada',
+                ], 400);
+            }
+
+            if ($request->stock < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stok tidak boleh kurang dari 0',
+                ], 400);
+            }
+
+            if ($request->price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga tidak boleh kurang dari 0',
+                ], 400);
+            }
 
             $product->update($request->all());
 
