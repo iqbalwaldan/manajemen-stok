@@ -246,7 +246,11 @@
                     },
                     {
                         data: 'product_id',
-                        name: 'product_id'
+                        name: 'product_id',
+                        render: function(data, type, row) {
+                            return '<span class="badge badge-primary p-2" style="min-width: 30px;">' +
+                                row.product.id + '</span> ' + row.product.name;
+                        }
                     },
                     {
                         data: 'stock_out',
@@ -254,19 +258,23 @@
                     },
                     {
                         data: 'purchase_price',
-                        name: 'purchase_price'
+                        name: 'purchase_price',
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'selling_price',
-                        name: 'selling_price'
+                        name: 'selling_price',
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'total_price',
-                        name: 'total_price'
+                        name: 'total_price',
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         data: 'profit',
-                        name: 'profit'
+                        name: 'profit',
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         width: '160px',
@@ -312,7 +320,7 @@
                     }
                 }
             });
-            
+
             function dateNow() {
                 let date = new Date();
                 return date.toISOString().split('T')[0];

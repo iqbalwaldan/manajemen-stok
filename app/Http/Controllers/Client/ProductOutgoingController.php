@@ -12,27 +12,34 @@ class ProductOutgoingController extends Controller
 {
     public function index(Request $request)
     {
-        $productOutgoing = ProductOutgoing::with('product')->latest();
+        $productOutgoing = ProductOutgoing::with('product')
+            ->orderByRaw('DATE(datetime_transaction) DESC')
+            ->orderBy('product_id', 'DESC')
+            ->get();
+
         if ($request->ajax()) {
             return DataTables::of($productOutgoing)
                 ->addIndexColumn()
                 ->editColumn('datetime_transaction', function ($outgoing) {
-                    return $outgoing->datetime_transaction->format('Y-m-d');
+                    return $outgoing->datetime_transaction->format('d-m-Y');
                 })
                 ->editColumn('product_id', function ($outgoing) {
-                    return $outgoing->product->name;
+                    return $outgoing->product->name . $outgoing->product->id;
+                })
+                ->editColumn('stock_out', function ($outgoing) {
+                    return (string)$outgoing->stock_out;
                 })
                 ->editColumn('purchase_price', function ($outgoing) {
-                    return 'Rp ' . number_format($outgoing->purchase_price, 0, ',', '.');
+                    return (string)$outgoing->purchase_price;
                 })
                 ->editColumn('selling_price', function ($outgoing) {
-                    return 'Rp ' . number_format($outgoing->selling_price, 0, ',', '.');
+                    return (string)$outgoing->selling_price;
                 })
                 ->editColumn('total_price', function ($outgoing) {
-                    return 'Rp ' . number_format($outgoing->total_price, 0, ',', '.');
+                    return (string)$outgoing->total_price;
                 })
                 ->editColumn('profit', function ($outgoing) {
-                    return 'Rp ' . number_format($outgoing->profit, 0, ',', '.');
+                    return (string)$outgoing->profit;
                 })
                 ->addColumn('action', 'admin.outgoing.action')
                 ->toJson();
@@ -88,10 +95,10 @@ class ProductOutgoingController extends Controller
                     'title' => 'Opss...',
                     'message' => 'Stok barang tidak mencukupi',
                 ], 400);
-            }else{
+            } else {
                 $product->stock -= $request->stock_out;
             }
-            
+
             $product->save();
             ProductOutgoing::create($request->all());
 
