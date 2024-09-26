@@ -186,6 +186,9 @@ class ProductOutgoingController extends Controller
     public function destroy(ProductOutgoing $outgoing)
     {
         try {
+            $product = Product::find($outgoing->product_id);
+            $product->stock += $outgoing->stock_out;
+            $product->save();
             $outgoing->delete();
             return response()->json([
                 'title' => 'Success!',
