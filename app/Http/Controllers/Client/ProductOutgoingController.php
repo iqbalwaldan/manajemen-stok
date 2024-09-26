@@ -128,7 +128,47 @@ class ProductOutgoingController extends Controller
                 'profit' => 'required',
             ]);
 
+            if ($request->stock_out < 1) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stock tidak boleh kurang dari 1',
+                ], 400);
+            }
+            if ($request->purchase_price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga beli tidak boleh kurang dari 1',
+                ], 400);
+            }
+            if ($request->selling_price < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Harga jual tidak boleh kurang dari 1',
+                ], 400);
+            }
+
+            $preProduct = Product::find($outgoing->product_id);
+            $preProduct->stock += $outgoing->stock_out;
+
+            if ($preProduct->id != $request->product_id) {
+                $product = Product::find($request->product_id);
+            } else {
+                $product = $preProduct;
+            }
+
+            if ($product->stock < $request->stock_out) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stok barang tidak mencukupi',
+                ], 400);
+            } else {
+                $product->stock -= $request->stock_out;
+            }
+
+            $preProduct->save();
+            $product->save();
             $outgoing->update($request->all());
+
             if ($outgoing) {
                 return response()->json([
                     'title' => 'Success!',

@@ -132,7 +132,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="exampleModalLongTitle">Ubah Produk Masuk</h4>
+                        <h4 class="modal-title" id="exampleModalLongTitle">Ubah Produk Keluar</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             id="button-x-edit-product-outgoing">
                             <span aria-hidden="true">&times;</span>
@@ -178,19 +178,19 @@
                             <div class="form-group">
                                 <label for="edit-outgoing-stock-out">Stok Keluar</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-outgoing-stock-out"
-                                    placeholder="Masukkan stok keluar" required>
+                                    placeholder="Masukkan stok keluar" min="1" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-outgoing-purchase-price">Harga Beli</label>
                                 <input type="number" class="form-control form-control-lg"
-                                    id="edit-outgoing-purchase-price" placeholder="Masukkan harga beli" required>
+                                    id="edit-outgoing-purchase-price" placeholder="Masukkan harga beli" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-outgoing-selling-price">Harga Jual</label>
                                 <input type="number" class="form-control form-control-lg"
-                                    id="edit-outgoing-selling-price" placeholder="Masukkan harga jual" required>
+                                    id="edit-outgoing-selling-price" placeholder="Masukkan harga jual" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
@@ -433,7 +433,12 @@
             $(document).on('click', '.button-edit-product-outgoing', function() {
                 selectedData = $('#table-product-outgoing').DataTable().row($(this).parents('tr')).data();
 
-                $('#edit-outgoing-date').val(selectedData.datetime_transaction);
+                let date = selectedData.datetime_transaction;
+                let dateParts = date.split('-'); 
+                let formattedDate =
+                    `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+                $('#edit-outgoing-date').val(formattedDate);
                 $('#edit-outgoing-buyer-name').val(selectedData.buyer_name);
                 tomSelectEditProductOutgoing.setValue(selectedData.product.id);
                 $('#edit-outgoing-stock-out').val(selectedData.stock_out);

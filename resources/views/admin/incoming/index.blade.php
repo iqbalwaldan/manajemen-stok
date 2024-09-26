@@ -445,11 +445,11 @@
                 selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
 
                 let date = selectedData.datetime_incoming;
-                let dateParts = date.split('-'); // Memisahkan string berdasarkan '-'
+                let dateParts = date.split('-'); 
                 let formattedDate =
-                    `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // Menggabungkan kembali dengan format yyyy-mm-dd
+                    `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
-                $('#edit-incoming-date').val(formattedDate); // Set nilai pada input tanggal
+                $('#edit-incoming-date').val(formattedDate);
                 tomSelectEditProductIncome.setValue(selectedData.product.id);
                 $('#edit-incoming-stock-in').val(selectedData.stock_in);
                 $('#edit-incoming-price').val(selectedData.price);

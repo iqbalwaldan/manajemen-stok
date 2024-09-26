@@ -161,17 +161,27 @@ class ProductIncomingController extends Controller
                 ], 400);
             }
 
-            $product = Product::find($incoming->product_id);
-            $product->stock -= $incoming->stock_in;
-            $product->save();
+            $preProduct = Product::find($incoming->product_id);
+            $preProduct->stock -= $incoming->stock_in;
             
-            $incoming->update($request->all());
 
-            if($product->id != $request->product_id){
+            if($preProduct->id != $request->product_id){
                 $product = Product::find($request->product_id);
+            }else{
+                $product = $preProduct;
             }
             $product->stock += $request->stock_in;
-            $product->save();
+
+            if($preProduct->stock < 0){
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stok barang tidak mencukupi',
+                ], 400);
+            } else {
+                $preProduct->save();
+                $product->save();
+                $incoming->update($request->all());
+            }
 
             return response()->json([
                 'title' => 'Success!',
