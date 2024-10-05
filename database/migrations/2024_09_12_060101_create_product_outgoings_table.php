@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('product_outgoings', function (Blueprint $table) {
             $table->id();
             $table->string('buyer_name');
+            $table->string('marketplace');
             $table->integer('stock_out')->default(0);
             $table->integer('purchase_price');
             $table->integer('selling_price');

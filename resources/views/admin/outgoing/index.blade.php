@@ -22,6 +22,7 @@
                             <th scope="col">No</th>
                             <th scope="col">Tanggal</th>
                             <th scope="col">Nama Pembeli</th>
+                            <th scope="col">Marketplace</th>
                             <th scope="col">Nama Produk</th>
                             <th scope="col">Stok Keluar</th>
                             <th scope="col">Harga Beli</th>
@@ -57,14 +58,30 @@
                                 <input type="date" class="form-control form-control-lg" id="outgoing-date" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-
                             <div class="form-group">
                                 <label for="outgoing-buyer-name">Nama Pembeli</label>
                                 <input type="text" class="form-control form-control-lg" id="outgoing-buyer-name"
                                     placeholder="Masukkan nama pembeli" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-
+                            <div class="form-group">
+                                <label for="outgoing-marketplace">Marketplace</label>
+                                <select class="form-control form-control-md" id="outgoing-marketplace" required>
+                                    <option value="">-- Pilih Marketplace --</option>
+                                    <option value="shopee">Shopee</option>
+                                    <option value="tokopedia">Tokopedia</option>
+                                    <option value="tiktok">Tiktok</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <!-- Input text untuk pilihan 'Lainnya' -->
+                            <div class="form-group" id="marketplace-form" style="display: none;">
+                                <label for="marketplace-other">Masukkan Nama Marketplace</label>
+                                <input type="text" class="form-control" id="marketplace-other"
+                                    placeholder="Masukkan nama marketplace" required>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
                             <div class="form-group form-group-custom">
                                 <label for="outgoing-product-name">Nama Produk</label>
                                 <span id="valo" class="material-symbols-rounded valid-logo">
@@ -148,14 +165,30 @@
                                     required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-
                             <div class="form-group">
                                 <label for="edit-outgoing-buyer-name">Nama Pembeli</label>
                                 <input type="text" class="form-control form-control-lg" id="edit-outgoing-buyer-name"
                                     placeholder="Masukkan nama pembeli" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-
+                            <div class="form-group">
+                                <label for="edit-outgoing-marketplace">Marketplace</label>
+                                <select class="form-control form-control-md" id="edit-outgoing-marketplace" required>
+                                    <option value="">-- Pilih Marketplace --</option>
+                                    <option value="shopee">Shopee</option>
+                                    <option value="tokopedia">Tokopedia</option>
+                                    <option value="tiktok">Tiktok</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <!-- Input text untuk pilihan 'Lainnya' -->
+                            <div class="form-group" id="edit-marketplace-form" style="display: none;">
+                                <label for="edit-marketplace-other">Masukkan Nama Marketplace</label>
+                                <input type="text" class="form-control" id="edit-marketplace-other"
+                                    placeholder="Masukkan nama marketplace" required>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
                             <div class="form-group form-group-custom">
                                 <label for="edit-outgoing-product-name">Nama Produk</label>
                                 <span id="edit-valo" class="material-symbols-rounded valid-logo">
@@ -184,13 +217,15 @@
                             <div class="form-group">
                                 <label for="edit-outgoing-purchase-price">Harga Beli</label>
                                 <input type="number" class="form-control form-control-lg"
-                                    id="edit-outgoing-purchase-price" placeholder="Masukkan harga beli" min="0" required>
+                                    id="edit-outgoing-purchase-price" placeholder="Masukkan harga beli" min="0"
+                                    required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-outgoing-selling-price">Harga Jual</label>
                                 <input type="number" class="form-control form-control-lg"
-                                    id="edit-outgoing-selling-price" placeholder="Masukkan harga jual" min="0" required>
+                                    id="edit-outgoing-selling-price" placeholder="Masukkan harga jual" min="0"
+                                    required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
@@ -243,6 +278,13 @@
                     {
                         data: 'buyer_name',
                         name: 'buyer_name'
+                    },
+                    {
+                        data: 'marketplace',
+                        name: 'marketplace',
+                        render: function(data, type, row) {
+                            return data.charAt(0).toUpperCase() + data.slice(1);
+                        }
                     },
                     {
                         data: 'product_id',
@@ -344,9 +386,27 @@
             }
             $('#outgoing-purchase-price,#outgoing-total-price').on('input', calculateProfit);
 
+            $('#outgoing-marketplace').on('change', function() {
+                var selectedValue = $(this).val();
+
+                if (selectedValue === 'lainnya') {
+                    $('#marketplace-form').show(); // Tampilkan input text jika 'Lainnya' dipilih
+                    $('#marketplace-other').attr('required', true); // Set input text menjadi required
+                } else {
+                    $('#marketplace-form').hide(); // Sembunyikan input text jika opsi lain dipilih
+                    $('#marketplace-other').val(''); // Kosongkan nilai input jika tersembunyi
+                    $('#marketplace-other').attr('required', false); // Hapus required dari input text
+                }
+            });
+
             $('#add-product-outgoing').click(function() {
                 var date = $('#outgoing-date').val();
                 var buyerName = $('#outgoing-buyer-name').val();
+                var marketplace = $('#outgoing-marketplace').val();
+                if (marketplace === 'lainnya') {
+                    marketplace = $('#marketplace-other').val();
+                    marketplace = marketplace.toLowerCase();
+                }
                 var product = $('#outgoing-product-name').val();
                 var stockOut = $('#outgoing-stock-out').val();
                 var purchasePrice = $('#outgoing-purchase-price').val();
@@ -360,6 +420,7 @@
                     data: {
                         datetime_transaction: date,
                         buyer_name: buyerName,
+                        marketplace: marketplace,
                         product_id: product,
                         stock_out: stockOut,
                         purchase_price: purchasePrice,
@@ -371,6 +432,8 @@
                     success: function(data) {
                         $('#outgoing-date').val('');
                         $('#outgoing-buyer-name').val('');
+                        $('#outgoing-marketplace').val('');
+                        $('#marketplace-other').val('');
                         tomSelectAddProductOutgoing.clear();
                         $('#outgoing-stock-out').val('');
                         $('#outgoing-purchase-price').val('');
@@ -430,16 +493,38 @@
                 }
             });
 
+            $('#edit-outgoing-marketplace').on('change', function() {
+                var selectedValue = $(this).val();
+
+                if (selectedValue === 'lainnya') {
+                    $('#edit-marketplace-form').show();
+                    $('#edit-marketplace-other').attr('required', true);
+                } else {
+                    $('#edit-marketplace-form').hide(); 
+                    $('#edit-marketplace-other').val('');
+                    $('#edit-marketplace-other').attr('required', false);
+                }
+            });
+
             $(document).on('click', '.button-edit-product-outgoing', function() {
                 selectedData = $('#table-product-outgoing').DataTable().row($(this).parents('tr')).data();
 
                 let date = selectedData.datetime_transaction;
-                let dateParts = date.split('-'); 
+                let dateParts = date.split('-');
                 let formattedDate =
                     `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
                 $('#edit-outgoing-date').val(formattedDate);
                 $('#edit-outgoing-buyer-name').val(selectedData.buyer_name);
+                $('#edit-outgoing-marketplace').val(selectedData.marketplace);
+                if (selectedData.marketplace != 'shopee' && selectedData.marketplace != 'tokopedia' && selectedData.marketplace != 'tiktok') {
+                    $('#edit-marketplace-form').show();
+                    $('#edit-outgoing-marketplace').val('lainnya');
+                    $('#edit-marketplace-other').val(selectedData.marketplace);
+                } else {
+                    $('#edit-marketplace-form').hide();
+                    $('#edit-marketplace-other').val('');
+                }
                 tomSelectEditProductOutgoing.setValue(selectedData.product.id);
                 $('#edit-outgoing-stock-out').val(selectedData.stock_out);
                 $('#edit-outgoing-purchase-price').val(selectedData.purchase_price);
@@ -471,6 +556,11 @@
             $('#edit-product-outgoing').click(function() {
                 var date = $('#edit-outgoing-date').val();
                 var buyerName = $('#edit-outgoing-buyer-name').val();
+                var marketplace = $('#edit-outgoing-marketplace').val();
+                if (marketplace === 'lainnya') {
+                    marketplace = $('#edit-marketplace-other').val();
+                    marketplace = marketplace.toLowerCase();
+                }
                 var product = $('#edit-outgoing-product-name').val();
                 var stockOut = $('#edit-outgoing-stock-out').val();
                 var purchasePrice = $('#edit-outgoing-purchase-price').val();
@@ -484,6 +574,7 @@
                     data: {
                         datetime_transaction: date,
                         buyer_name: buyerName,
+                        marketplace: marketplace,
                         product_id: product,
                         stock_out: stockOut,
                         purchase_price: purchasePrice,
@@ -495,6 +586,8 @@
                     success: function(data) {
                         $('#edit-outgoing-date').val('');
                         $('#edit-outgoing-buyer-name').val('');
+                        $('#edit-outgoing-marketplace').val('');
+                        $('#edit-marketplace-other').val('');
                         tomSelectEditProductOutgoing.clear();
                         $('#edit-outgoing-stock-out').val('');
                         $('#edit-outgoing-purchase-price').val('');

@@ -58,6 +58,7 @@ class ProductOutgoingController extends Controller
             $request->validate([
                 'datetime_transaction' => 'required',
                 'buyer_name' => 'required',
+                'marketplace' => 'required',
                 'product_id' => 'required',
                 'stock_out' => 'required',
                 'purchase_price' => 'required',
@@ -120,6 +121,7 @@ class ProductOutgoingController extends Controller
             $request->validate([
                 'datetime_transaction' => 'required',
                 'buyer_name' => 'required',
+                'marketplace' => 'required',
                 'product_id' => 'required',
                 'stock_out' => 'required',
                 'purchase_price' => 'required',
