@@ -27,7 +27,7 @@ class BalanceStockController extends Controller
             $stockOut = $productOutgoing->sum('stock_out');
             // stock final
             $stockFinal = $product->stock;
-            $stock = $stockIn - $stockOut;
+            $stock = $stockFinal - $stockIn + $stockOut;
             $data[] = [
                 'type' => $productType,
                 'name' => $productName,

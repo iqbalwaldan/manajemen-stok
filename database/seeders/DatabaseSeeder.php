@@ -40,31 +40,31 @@ class DatabaseSeeder extends Seeder
                 'name' => 'TAYA MARUN',
                 'product_type_id' => 1,
                 'price' => 1000,
-                'stock' => 10,
+                'stock' => 0,
             ],
             [
                 'name' => 'ELEA DUSTY',
                 'product_type_id' => 2,
                 'price' => 2000,
-                'stock' => 20,
+                'stock' => 0,
             ],
             [
                 'name' => 'YUKI DENIM',
                 'product_type_id' => 3,
                 'price' => 3000,
-                'stock' => 30,
+                'stock' => 0,
             ],
             [
                 'name' => 'THALIA HITAM',
                 'product_type_id' => 4,
                 'price' => 4000,
-                'stock' => 40,
+                'stock' => 0,
             ],
             [
                 'name' => 'YUNA BW',
                 'product_type_id' => 5,
                 'price' => 5000,
-                'stock' => 50,
+                'stock' => 0,
             ],
         ];
         
