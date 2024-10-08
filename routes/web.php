@@ -7,6 +7,7 @@ use App\Http\Controllers\Client\ProductIncomingController;
 use App\Http\Controllers\Client\ProductOutgoingController;
 use App\Http\Controllers\Client\ProductTypeController;
 use App\Http\Controllers\Client\BalanceStockController;
+use App\Http\Controllers\Client\CashFlowController;
 use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\ReportController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/report', [ReportController::class, 'index']);
     Route::post('/report', [ReportController::class, 'store']);
     Route::get('/report-date', [ReportController::class, 'getStockOut']);
+    Route::get('/cash-flow', [CashFlowController::class, 'index']);
 
     Route::get('/logout', [AuthUserController::class, 'logout']);
 

@@ -1,10 +1,8 @@
 <nav id="sidebar" class="sidebar js-sidebar">
     <div class="sidebar-content js-simplebar">
         <a class="sidebar-brand" href="/dashboard">
-            {{-- <span class="align-middle">AdminKit</span> --}}
-            <img src="{{ asset('adminKit/img/brand/features1.png') }}" alt=""
-                style="width: 50px">
-            <h3 style="color:white; font-size:30px; font-weight: bold; margin: 0px;">STOCK</h3>
+            <img src="{{ asset('adminKit/img/brand/logo.png') }}" alt=""
+                style="width: 85px">
         </a>
 
         <ul class="sidebar-nav">
@@ -46,6 +44,11 @@
             <li class="sidebar-item {{ Request::is('report*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="/report">
                     <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Report</span>
+                </a>
+            </li>
+            <li class="sidebar-item {{ Request::is('cash-flow*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="/cash-flow">
+                    <i class="align-middle" data-feather="layers"></i> <span class="align-middle">Keuangan</span>
                 </a>
             </li>
         </ul>
