@@ -44,8 +44,8 @@ class ProductController extends Controller
         };
 
         return view('admin.product.index', [
-            'title' => 'Facebook Account',
-            'active' => 'facebook-account',
+            'title' => 'Produk',
+            'active' => 'produk',
             'productTypes' => $productTypes,
         ]);
     }

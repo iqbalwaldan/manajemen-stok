@@ -72,12 +72,24 @@
                             </div>
                             <div class="form-group">
                                 <label for="incoming-stock-in">Stok Masuk</label>
-                                <input type="number" class="form-control form-control-lg" id="incoming-stock-in"
-                                    placeholder="Masukkan stok masuk" min="1" required>
-                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <div style="width: 100%">
+                                        <input type="number" class="form-control form-control-lg" id="incoming-stock-in"
+                                            placeholder="Masukkan stok masuk" min="1" required>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                    <div style="width: 100%">
+                                        <select class="form-control form-control-md" id="incoming-unit" required>
+                                            <option value="">-- Pilih Satuan --</option>
+                                            <option value="1">Pcs</option>
+                                            <option value="2">Lusin</option>
+                                        </select>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="incoming-price">Harga</label>
+                                <label id="label-incoming-price" for="incoming-price">Harga</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-price"
                                     placeholder="Masukkan harga" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
@@ -164,12 +176,25 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit-incoming-stock-in">Stok Masuk</label>
-                                <input type="number" class="form-control form-control-lg" id="edit-incoming-stock-in"
-                                    placeholder="Masukkan stok masuk" min="1" required>
-                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <div style="width: 100%">
+                                        <input type="number" class="form-control form-control-lg"
+                                            id="edit-incoming-stock-in" placeholder="Masukkan stok masuk" min="1"
+                                            required>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                    <div style="width: 100%">
+                                        <select class="form-control form-control-md" id="edit-incoming-unit" required>
+                                            <option value="">-- Pilih Satuan --</option>
+                                            <option value="1" selected>Pcs</option>
+                                            <option value="2">Lusin</option>
+                                        </select>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="edit-incoming-price">Harga</label>
+                                <label id="edit-label-incoming-price" for="edit-incoming-price">Harga</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-price"
                                     placeholder="Masukkan harga" min="0" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
@@ -332,6 +357,18 @@
                 return date.toISOString().split('T')[0];
             }
 
+            function unit() {
+                let unit = $('#incoming-unit').val();
+                if (unit == 1) {
+                    $('#label-incoming-price').text('Harga per Pcs');
+                } else if (unit == 2) {
+                    $('#label-incoming-price').text('Harga per Lusin');
+                } else {
+                    $('#label-incoming-price').text('Harga');
+                }
+            }
+            $('#incoming-unit').on('change', unit);
+
             function calculateTotalPrice() {
                 let price = $('#incoming-price').val();
                 let stockIn = $('#incoming-stock-in').val();
@@ -358,7 +395,11 @@
             $('#add-product-incoming').click(function() {
                 var date = $('#incoming-date').val();
                 var product = $('#incoming-product-name').val();
-                var stockIn = $('#incoming-stock-in').val();
+                if ($('#incoming-unit').val() == 1) {
+                    var stockIn = $('#incoming-stock-in').val();
+                } else if ($('#incoming-unit').val() == 2) {
+                    var stockIn = $('#incoming-stock-in').val() * 12;
+                }
                 var price = $('#incoming-price').val();
                 var totalPrice = $('#incoming-total-price').val();
                 var dp = $('#incoming-dp').val();
@@ -383,6 +424,7 @@
                         $('#incoming-date').val('');
                         tomSelectAddProductIncome.clear();
                         $('#incoming-stock-in').val('');
+                        $('#incoming-unit').val('');
                         $('#incoming-price').val('');
                         $('#incoming-total-price').val('');
                         $('#incoming-dp').val('');
@@ -445,13 +487,12 @@
                 selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
 
                 let date = selectedData.datetime_incoming;
-                let dateParts = date.split('-'); 
-                let formattedDate =
-                    `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-
+                let dateParts = date.split('-');
+                let formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
                 $('#edit-incoming-date').val(formattedDate);
                 tomSelectEditProductIncome.setValue(selectedData.product.id);
                 $('#edit-incoming-stock-in').val(selectedData.stock_in);
+                $('#edit-incoming-unit').val(1);
                 $('#edit-incoming-price').val(selectedData.price);
                 $('#edit-incoming-total-price').val(selectedData.total_price);
                 $('#edit-incoming-dp').val(selectedData.dp);
@@ -464,6 +505,18 @@
                 $('#edit-incoming-paid-off').val(selectedData.paid_off);
                 $('#modalEditProductIncoming').modal('show');
             });
+
+            function editUnit() {
+                let unit = $('#edit-incoming-unit').val();
+                if (unit == 1) {
+                    $('#edit-label-incoming-price').text('Harga per Pcs');
+                } else if (unit == 2) {
+                    $('#edit-label-incoming-price').text('Harga per Lusin');
+                } else {
+                    $('#edit-label-incoming-price').text('Harga');
+                }
+            }
+            $('#edit-incoming-unit').on('change', unit);
 
             function calculateEditTotalPrice() {
                 let price = $('#edit-incoming-price').val();
@@ -491,7 +544,11 @@
             $('#edit-product-incoming').click(function() {
                 var date = $('#edit-incoming-date').val();
                 var product = $('#edit-incoming-product-name').val();
-                var stockIn = $('#edit-incoming-stock-in').val();
+                if ($('#edit-incoming-unit').val() == 1) {
+                    var stockIn = $('#edit-incoming-stock-in').val();
+                } else if ($('#edit-incoming-unit').val() == 2) {
+                    var stockIn = $('#edit-incoming-stock-in').val() * 12;
+                }
                 var price = $('#edit-incoming-price').val();
                 var totalPrice = $('#edit-incoming-total-price').val();
                 var dp = $('#edit-incoming-dp').val();
@@ -516,6 +573,7 @@
                         $('#edit-incoming-date').val('');
                         $('#edit-incoming-product-name').val('');
                         $('#edit-incoming-stock-in').val('');
+                        $('#edit-incoming-unit').val('');
                         $('#edit-incoming-price').val('');
                         $('#edit-incoming-total-price').val('');
                         $('#edit-incoming-dp').val('');

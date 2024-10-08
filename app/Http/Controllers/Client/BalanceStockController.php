@@ -43,7 +43,7 @@ class BalanceStockController extends Controller
                 ->toJson();
         };
         return view('admin.stock.index', [
-            'title' => 'Stock',
+            'title' => 'Stok',
             'active' => 'stock',
         ]);
     }

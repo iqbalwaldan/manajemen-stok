@@ -103,9 +103,21 @@
                             </div>
                             <div class="form-group">
                                 <label for="outgoing-stock-out">Stok Keluar</label>
-                                <input type="number" class="form-control form-control-lg" id="outgoing-stock-out"
-                                    placeholder="Masukkan stok keluar" min="1" required>
-                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <div style="width: 100%">
+                                        <input type="number" class="form-control form-control-lg" id="outgoing-stock-out"
+                                            placeholder="Masukkan stok keluar" min="1" required>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                    <div style="width: 100%">
+                                        <select class="form-control form-control-md" id="outgoing-unit" required>
+                                            <option value="">-- Pilih Satuan --</option>
+                                            <option value="1">Pcs</option>
+                                            <option value="2">Lusin</option>
+                                        </select>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="outgoing-purchase-price">Harga Beli</label>
@@ -210,9 +222,21 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit-outgoing-stock-out">Stok Keluar</label>
-                                <input type="number" class="form-control form-control-lg" id="edit-outgoing-stock-out"
-                                    placeholder="Masukkan stok keluar" min="1" required>
-                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <div style="width: 100%">
+                                        <input type="number" class="form-control form-control-lg" id="edit-outgoing-stock-out"
+                                            placeholder="Masukkan stok keluar" min="1" required>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                    <div style="width: 100%">
+                                        <select class="form-control form-control-md" id="edit-outgoing-unit" required>
+                                            <option value="">-- Pilih Satuan --</option>
+                                            <option value="1" selected>Pcs</option>
+                                            <option value="2">Lusin</option>
+                                        </select>
+                                        <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-outgoing-purchase-price">Harga Beli</label>
@@ -348,6 +372,7 @@
                                 },
                                 success: function(response) {
                                     $('#outgoing-purchase-price').val(response.price);
+                                    calculateTotalPrice();
                                 },
                                 error: function(xhr) {
                                     console.error(xhr.responseText);
@@ -370,32 +395,45 @@
 
             function calculateTotalPrice() {
                 let sellingPrice = $('#outgoing-selling-price').val();
-                let stockOut = $('#outgoing-stock-out').val();
+                let unit = $('#outgoing-unit').val();
+                if (unit == '' || sellingPrice == '') {
+                    return;
+                }
+                if (unit == 1) {
+                    var stockOut = $('#outgoing-stock-out').val();
+                } else if (unit == 2) {
+                    var stockOut = $('#outgoing-stock-out').val() * 12;
+                }
                 let totalPrice = sellingPrice * stockOut;
                 $('#outgoing-total-price').val(totalPrice);
                 calculateProfit();
             }
-            $('#outgoing-selling-price, #outgoing-stock-out').on('input', calculateTotalPrice);
 
             function calculateProfit() {
-                let stockOut = $('#outgoing-stock-out').val();
+                if ($('#outgoing-unit').val() == 1) {
+                    var stockOut = $('#outgoing-stock-out').val();
+                } else if ($('#outgoing-unit').val() == 2) {
+                    var stockOut = $('#outgoing-stock-out').val() * 12;
+                }
                 let totalPrice = $('#outgoing-total-price').val();
                 let purchasePrice = $('#outgoing-purchase-price').val();
                 let profit = totalPrice - (stockOut * purchasePrice);
                 $('#outgoing-profit').val(profit);
             }
-            $('#outgoing-purchase-price,#outgoing-total-price').on('input', calculateProfit);
 
+            $('#outgoing-purchase-price, #outgoing-selling-price, #outgoing-stock-out').on('input', calculateTotalPrice);
+            $('#outgoing-unit').on('change', calculateTotalPrice);
+            
             $('#outgoing-marketplace').on('change', function() {
                 var selectedValue = $(this).val();
 
                 if (selectedValue === 'lainnya') {
-                    $('#marketplace-form').show(); // Tampilkan input text jika 'Lainnya' dipilih
-                    $('#marketplace-other').attr('required', true); // Set input text menjadi required
+                    $('#marketplace-form').show(); 
+                    $('#marketplace-other').attr('required', true); 
                 } else {
-                    $('#marketplace-form').hide(); // Sembunyikan input text jika opsi lain dipilih
-                    $('#marketplace-other').val(''); // Kosongkan nilai input jika tersembunyi
-                    $('#marketplace-other').attr('required', false); // Hapus required dari input text
+                    $('#marketplace-form').hide(); 
+                    $('#marketplace-other').val('');
+                    $('#marketplace-other').attr('required', false); 
                 }
             });
 
@@ -408,7 +446,11 @@
                     marketplace = marketplace.toLowerCase();
                 }
                 var product = $('#outgoing-product-name').val();
-                var stockOut = $('#outgoing-stock-out').val();
+                if ($('#outgoing-unit').val() == 1) {
+                    var stockOut = $('#outgoing-stock-out').val();
+                } else if ($('#outgoing-unit').val() == 2) {
+                    var stockOut = $('#outgoing-stock-out').val() * 12;
+                }
                 var purchasePrice = $('#outgoing-purchase-price').val();
                 var sellingPrice = $('#outgoing-selling-price').val();
                 var totalPrice = $('#outgoing-total-price').val();
@@ -484,6 +526,22 @@
                             'filled');
                         $('#edit-valo').addClass('hidden');
                         $('#edit-invalo').removeClass('hidden');
+                        if (value) {
+                            $.ajax({
+                                url: '/product-data',
+                                type: 'GET',
+                                data: {
+                                    id: value,
+                                },
+                                success: function(response) {
+                                    $('#edit-outgoing-purchase-price').val(response.price);
+                                    calculateEditTotalPrice();
+                                },
+                                error: function(xhr) {
+                                    console.error(xhr.responseText);
+                                }
+                            });
+                        }
                     } else {
                         $(this.input).siblings('.custom-tom-select').removeClass('filled').addClass(
                             'empty');
@@ -500,7 +558,7 @@
                     $('#edit-marketplace-form').show();
                     $('#edit-marketplace-other').attr('required', true);
                 } else {
-                    $('#edit-marketplace-form').hide(); 
+                    $('#edit-marketplace-form').hide();
                     $('#edit-marketplace-other').val('');
                     $('#edit-marketplace-other').attr('required', false);
                 }
@@ -517,7 +575,8 @@
                 $('#edit-outgoing-date').val(formattedDate);
                 $('#edit-outgoing-buyer-name').val(selectedData.buyer_name);
                 $('#edit-outgoing-marketplace').val(selectedData.marketplace);
-                if (selectedData.marketplace != 'shopee' && selectedData.marketplace != 'tokopedia' && selectedData.marketplace != 'tiktok') {
+                if (selectedData.marketplace != 'shopee' && selectedData.marketplace != 'tokopedia' &&
+                    selectedData.marketplace != 'tiktok') {
                     $('#edit-marketplace-form').show();
                     $('#edit-outgoing-marketplace').val('lainnya');
                     $('#edit-marketplace-other').val(selectedData.marketplace);
@@ -537,21 +596,33 @@
 
             function calculateEditTotalPrice() {
                 let sellingPrice = $('#edit-outgoing-selling-price').val();
-                let stockOut = $('#edit-outgoing-stock-out').val();
+                let unit = $('#edit-outgoing-unit').val();
+                if (unit == '' || sellingPrice == '') {
+                    return;
+                }
+                if (unit == 1) {
+                    var stockOut = $('#edit-outgoing-stock-out').val();
+                } else if (unit == 2) {
+                    var stockOut = $('#edit-outgoing-stock-out').val() * 12;
+                }
                 let totalPrice = sellingPrice * stockOut;
                 $('#edit-outgoing-total-price').val(totalPrice);
                 calculateEditProfit();
             }
-            $('#edit-outgoing-selling-price, #edit-outgoing-stock-out').on('input', calculateEditTotalPrice);
+            $('#edit-outgoing-purchase-price, #edit-outgoing-selling-price, #edit-outgoing-stock-out').on('input', calculateEditTotalPrice);
+            $('#edit-outgoing-unit').on('change', calculateEditTotalPrice);
 
             function calculateEditProfit() {
-                let stockOut = $('#edit-outgoing-stock-out').val();
+                if ($('#edit-outgoing-unit').val() == 1) {
+                    var stockOut = $('#edit-outgoing-stock-out').val();
+                } else if ($('#edit-outgoing-unit').val() == 2) {
+                    var stockOut = $('#edit-outgoing-stock-out').val() * 12;
+                }
                 let totalPrice = $('#edit-outgoing-total-price').val();
                 let purchasePrice = $('#edit-outgoing-purchase-price').val();
                 let profit = totalPrice - (stockOut * purchasePrice);
                 $('#edit-outgoing-profit').val(profit);
             }
-            $('#edit-outgoing-purchase-price,#edit-outgoing-total-price').on('input', calculateEditProfit);
 
             $('#edit-product-outgoing').click(function() {
                 var date = $('#edit-outgoing-date').val();
@@ -562,7 +633,11 @@
                     marketplace = marketplace.toLowerCase();
                 }
                 var product = $('#edit-outgoing-product-name').val();
-                var stockOut = $('#edit-outgoing-stock-out').val();
+                if ($('#edit-outgoing-unit').val() == 1) {
+                    var stockOut = $('#edit-outgoing-stock-out').val();
+                } else if ($('#edit-outgoing-unit').val() == 2) {
+                    var stockOut = $('#edit-outgoing-stock-out').val() * 12;
+                }
                 var purchasePrice = $('#edit-outgoing-purchase-price').val();
                 var sellingPrice = $('#edit-outgoing-selling-price').val();
                 var totalPrice = $('#edit-outgoing-total-price').val();

@@ -12131,13 +12131,10 @@
    color: #e9ecef;
  }
  .sidebar-brand {
-   display: flex;
-    align-items: center;
-    gap: 10px;
-   color: #f8f9fa;
    font-size: 1.15rem;
    font-weight: 600;
    padding: 1.15rem 1.5rem;
+   background-color: white;
  }
  .sidebar-brand:hover {
    color: #f8f9fa;
@@ -12211,6 +12208,26 @@
    color: #3b7ddd !important;
    height: 18px;
    width: 18px;
+ }
+ .statSuccess {
+  align-items: center;
+   background: #198754;
+   color: white;
+   border-radius: 50%;
+   display: flex;
+   height: 40px;
+   justify-content: center;
+   width: 40px;
+ }
+ .statDanger {
+  align-items: center;
+   background: #DC3545;
+   color: white;
+   border-radius: 50%;
+   display: flex;
+   height: 40px;
+   justify-content: center;
+   width: 40px;
  }
  .table tbody,
  .table td,

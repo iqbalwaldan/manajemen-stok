@@ -47,7 +47,7 @@ class ProductOutgoingController extends Controller
 
         return view('admin.outgoing.index', [
             'products' => Product::all(),
-            'title' => 'Outgoing',
+            'title' => 'Produk Keluar',
             'active' => 'outgoing',
         ]);
     }

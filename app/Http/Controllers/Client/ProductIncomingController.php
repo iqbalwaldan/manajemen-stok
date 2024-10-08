@@ -50,7 +50,7 @@ class ProductIncomingController extends Controller
         };
 
         return view('admin.incoming.index', [
-            'title' => 'Incoming',
+            'title' => 'Produk Masuk',
             'active' => 'incoming',
             'products' => Product::all(),
         ]);

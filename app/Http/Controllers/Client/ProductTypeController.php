@@ -22,7 +22,7 @@ class ProductTypeController extends Controller
                 ->toJson();
         };
         return view('admin.type.index', [
-            'title' => 'Type',
+            'title' => 'Produk Tipe',
             'active' => 'type',
         ]);
     }
