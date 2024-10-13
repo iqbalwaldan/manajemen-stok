@@ -397,10 +397,11 @@
                 var product = $('#incoming-product-name').val();
                 if ($('#incoming-unit').val() == 1) {
                     var stockIn = $('#incoming-stock-in').val();
+                    var price = $('#incoming-price').val();
                 } else if ($('#incoming-unit').val() == 2) {
                     var stockIn = $('#incoming-stock-in').val() * 12;
+                    var price = $('#incoming-price').val() / 12;
                 }
-                var price = $('#incoming-price').val();
                 var totalPrice = $('#incoming-total-price').val();
                 var dp = $('#incoming-dp').val();
                 var paymentStatus = $('#incoming-payment-status').val();
@@ -546,10 +547,11 @@
                 var product = $('#edit-incoming-product-name').val();
                 if ($('#edit-incoming-unit').val() == 1) {
                     var stockIn = $('#edit-incoming-stock-in').val();
+                    var price = $('#edit-incoming-price').val();
                 } else if ($('#edit-incoming-unit').val() == 2) {
                     var stockIn = $('#edit-incoming-stock-in').val() * 12;
+                    var price = $('#edit-incoming-price').val() / 12;
                 }
-                var price = $('#edit-incoming-price').val();
                 var totalPrice = $('#edit-incoming-total-price').val();
                 var dp = $('#edit-incoming-dp').val();
                 var paymentStatus = $('#edit-incoming-payment-status').val();
