@@ -19,4 +19,9 @@ class ProductIncoming extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function productInstallments()
+    {
+        return $this->hasMany(ProductInstallment::class);
+    }
 }
