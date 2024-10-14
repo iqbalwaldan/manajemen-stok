@@ -105,7 +105,7 @@
                                 <label for="incoming-payment-type">Tipe Pembayaran</label>
                                 <select class="form-control form-control-md" id="incoming-payment-type" required>
                                     <option value="">-- Pilih Tipe Pembayaran --</option>
-                                    <option value="1">Cash</option>
+                                    <option value="1">Tunai</option>
                                     <option value="2">Cicil</option>
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
@@ -223,6 +223,23 @@
                                 <label for="edit-incoming-total-price">Total Harga</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-total-price"
                                     placeholder="Isi stok masuk dan harga terlebih dahulu" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-incoming-payment-type">Tipe Pembayaran</label>
+                                <select class="form-control form-control-md" id="edit-incoming-payment-type" required>
+                                    <option value="">-- Pilih Tipe Pembayaran --</option>
+                                    <option value="1">Tunai</option>
+                                    <option value="2">Cicil</option>
+                                </select>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
+                                <label id="edit-incoming-total-installment-label" for="edit-incoming-total-installment"
+                                    hidden disabled>Jumlah Cicilan</label>
+                                <input type="number" class="form-control form-control-lg"
+                                    id="edit-incoming-total-installment" placeholder="Masukkan jumalah cicilan"
+                                    min="0" hidden disabled>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group">
                                 <label for="edit-incoming-dp">DP</label>
@@ -490,7 +507,7 @@
                 }
                 calculatePaidOff();
             }
-            $('#incoming-price, #incoming-stock-in').on('input', calculateTotalPrice);
+            $('#incoming-price, #incoming-stock-in').on('change', calculateTotalPrice);
 
             function calculatePaidOff() {
                 let totalPrice = $('#incoming-total-price').val();
@@ -505,7 +522,7 @@
                 }
 
             }
-            $('#incoming-dp').on('input', calculatePaidOff);
+            $('#incoming-dp').on('change', calculatePaidOff);
 
             function paymentTypeCondition() {
                 let paymentType = $('#incoming-payment-type').val();
@@ -645,10 +662,18 @@
                 $('#edit-incoming-unit').val(1);
                 $('#edit-incoming-price').val(selectedData.price);
                 $('#edit-incoming-total-price').val(selectedData.total_price);
+                let paymentType = selectedData.payment_type == 'Tunai' ? 1 : 2;
+                $('#edit-incoming-payment-type').val(paymentType);
+                $('#edit-incoming-total-installment').val(selectedData.total_installment);
                 $('#edit-incoming-dp').val(selectedData.dp);
                 $('#edit-incoming-payment-status').val(selectedData.payment_status);
                 $('#edit-incoming-paid-off').val(selectedData.paid_off);
                 paymentStatus();
+                if (selectedData.total_detail_installments > 0 || $('#edit-incoming-payment-status').val() == 'Lunas') {
+                    $('#edit-incoming-payment-type').attr('disabled', true);
+                } else {
+                    $('#edit-incoming-payment-type').removeAttr('disabled', false);
+                }
                 $('#modalEditProductIncoming').modal('show');
             });
 
@@ -671,7 +696,7 @@
                 $('#edit-incoming-total-price').val(totalPrice);
                 calculateEditPaidOff();
             }
-            $('#edit-incoming-price, #edit-incoming-stock-in').on('input', calculateEditTotalPrice);
+            $('#edit-incoming-price, #edit-incoming-stock-in').on('change', calculateEditTotalPrice);
 
             function calculateEditPaidOff() {
                 let totalPrice = $('#edit-incoming-total-price').val();
@@ -686,20 +711,58 @@
                 }
                 paymentStatus();
             }
-            $('#edit-incoming-dp').on('input', calculateEditPaidOff);
+            $('#edit-incoming-dp').on('change', calculateEditPaidOff);
+
+            $('#edit-incoming-payment-type').on('change', function() {
+                let paymentType = $('#edit-incoming-payment-type').val();
+                if (paymentType == 1) {
+                    paymentStatus();
+                    $('#edit-incoming-dp').val($('#edit-incoming-total-price').val());
+                    $('#edit-incoming-total-installment').val(0);
+                    calculateEditPaidOff();
+                    $('#edit-incoming-total-installment-label').attr('disabled', true);
+                    $('#edit-incoming-total-installment').attr('disabled', true);
+                    $('#edit-incoming-total-installment-label').attr('hidden', true);
+                    $('#edit-incoming-total-installment').attr('hidden', true);
+                    $('#edit-incoming-total-installment').attr('min', 0);
+                    
+                } else {
+                    paymentStatus();
+                    $('#edit-incoming-dp').val(0);
+                    $('#edit-incoming-total-installment').val(0);
+                    calculateEditPaidOff();
+                    $('#edit-incoming-payment-type').removeAttr('disabled', false);
+                    $('#edit-incoming-total-installment-label').removeAttr('disabled', false);
+                    $('#edit-incoming-total-installment').removeAttr('disabled', false);
+                    $('#edit-incoming-total-installment-label').removeAttr('hidden', false);
+                    $('#edit-incoming-total-installment').removeAttr('hidden', false);
+                    $('#edit-incoming-total-installment').attr('min', 2);
+                }
+            });
 
             function paymentStatus() {
                 let status = $('#edit-incoming-payment-status').val();
-                if (status == 'Belum Lunas' && selectedData.total_detail_installments == 0) {
+                let paymentType = $('#edit-incoming-payment-type').val();
+                if (status == 'Belum Lunas' && selectedData.total_detail_installments == 0 && paymentType == 2) {
                     $('#edit-incoming-dp').removeAttr('disabled', false);
                     $('#edit-incoming-price').removeAttr('disabled', false);
                     $('#edit-incoming-stock-in').removeAttr('disabled', false);
                     $('#edit-incoming-unit').removeAttr('disabled', false);
-                } else if (status == 'Lunas' || selectedData.total_detail_installments > 0) {
+                    // $('#edit-incoming-payment-type').removeAttr('disabled', false);
+                    $('#edit-incoming-total-installment-label').removeAttr('disabled', false);
+                    $('#edit-incoming-total-installment').removeAttr('disabled', false);
+                    $('#edit-incoming-total-installment-label').removeAttr('hidden', false);
+                    $('#edit-incoming-total-installment').removeAttr('hidden', false);
+                } else if (status == 'Lunas' || selectedData.total_detail_installments > 0 || paymentType == 1) {
                     $('#edit-incoming-dp').attr('disabled', true);
                     $('#edit-incoming-price').attr('disabled', true);
                     $('#edit-incoming-stock-in').attr('disabled', true);
                     $('#edit-incoming-unit').attr('disabled', true);
+                    // $('#edit-incoming-payment-type').attr('disabled', true);
+                    $('#edit-incoming-total-installment-label').attr('disabled', true);
+                    $('#edit-incoming-total-installment').attr('disabled', true);
+                    $('#edit-incoming-total-installment-label').attr('hidden', true);
+                    $('#edit-incoming-total-installment').attr('hidden', true);
                 }
             }
 
@@ -713,13 +776,15 @@
                     var stockIn = $('#edit-incoming-stock-in').val() * 12;
                     var price = $('#edit-incoming-price').val() / 12;
                 }
-                var totalPrice = $('#edit-incoming-total-price').val();
-                var dp = $('#edit-incoming-dp').val();
                 if ($('#edit-incoming-payment-status').val() == 'Belum Lunas') {
                     var paymentStatus = 'Belum';
                 } else {
                     var paymentStatus = $('#edit-incoming-payment-status').val();
                 }
+                var totalPrice = $('#edit-incoming-total-price').val();
+                var paymentType = $('#edit-incoming-payment-type').val();
+                var dp = $('#edit-incoming-dp').val();
+                var totalInstallment = $('#edit-incoming-total-installment').val();
                 var paidOff = $('#edit-incoming-paid-off').val();
 
                 $.ajax({
@@ -731,6 +796,8 @@
                         stock_in: stockIn,
                         price: price,
                         total_price: totalPrice,
+                        payment_type: paymentType,
+                        total_installment: totalInstallment,
                         dp: dp,
                         payment_status: paymentStatus,
                         paid_off: paidOff,
@@ -826,7 +893,7 @@
                 var datetime_payment = $('#add-installment-date').val();
                 var installment = $('#add-installment-price').val();
                 $.ajax({
-                    url: '/cash-flow',
+                    url: '/Tunai-flow',
                     type: 'POST',
                     data: {
                         datetime_payment: datetime_payment,

@@ -44,7 +44,7 @@ class ProductIncomingController extends Controller
                     return $incoming->payment_status == 'lunas' ? 'Lunas' : 'Belum Lunas';
                 })
                 ->editColumn('payment_type', function ($incoming) {
-                    return $incoming->payment_type == 'cash' ? 'Tunai' : 'Cicilan';
+                    return $incoming->payment_type == 'cash' ? 'Tunai' : 'Cicil';
                 })
                 ->editColumn('total_installment', function ($incoming) {
                     return (string)$incoming->total_installment;
@@ -147,6 +147,8 @@ class ProductIncomingController extends Controller
                 'stock_in' => 'required|numeric',
                 'price' => 'required|numeric',
                 'total_price' => 'required|numeric',
+                'payment_type' => 'required',
+                'total_installment' => 'required|numeric|min:0',
                 'dp' => 'required|numeric',
                 'paid_off' => 'required|numeric',
                 'payment_status' => 'required',
@@ -180,6 +182,13 @@ class ProductIncomingController extends Controller
                 return response()->json([
                     'title' => 'Opss...',
                     'message' => 'DP melebihi total harus dibayar',
+                ], 400);
+            }
+
+            if ($request->payment_type == 2 && $request->total_installment < 2 && $incoming->payment_type == 2) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Total cicilan tidak boleh kurang dari 2',
                 ], 400);
             }
 
