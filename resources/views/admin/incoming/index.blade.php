@@ -27,6 +27,8 @@
                             <th scope="col">Total Harga</th>
                             <th scope="col">DP</th>
                             <th scope="col">Status Pembayaran</th>
+                            <th scope="col">Tipe Pembayaran</th>
+                            <th scope="col">Jumlah Cicilan</th>
                             <th scope="col">Pelunasan</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -100,6 +102,23 @@
                                     placeholder="Isi stok masuk dan harga terlebih dahulu" required disabled>
                             </div>
                             <div class="form-group">
+                                <label for="incoming-payment-type">Tipe Pembayaran</label>
+                                <select class="form-control form-control-md" id="incoming-payment-type" required>
+                                    <option value="">-- Pilih Tipe Pembayaran --</option>
+                                    <option value="1">Cash</option>
+                                    <option value="2">Cicil</option>
+                                </select>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
+                                <label id="incoming-total-installment-label" for="incoming-total-installment"
+                                    hidden>Jumlah Cicilan</label>
+                                <input type="number" class="form-control form-control-lg"
+                                    id="incoming-total-installment" placeholder="Masukkan jumalah cicilan" min="0"
+                                    hidden>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
                                 <label for="incoming-dp">DP</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-dp"
                                     placeholder="Masukkan dp" min="0" required>
@@ -107,10 +126,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="incoming-payment-status">Status Pembayaran</label>
-                                <select class="form-control form-control-md" id="incoming-payment-status" required>
+                                <select class="form-control form-control-md" id="incoming-payment-status" required
+                                    disabled>
                                     <option value="">-- Pilih Status Pembayaran --</option>
+                                    <option value="1" selected>Belum Lunas</option>
                                     <option value="2">Lunas</option>
-                                    <option value="1">Belum Lunas</option>
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
@@ -212,10 +232,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit-incoming-payment-status">Status Pembayaran</label>
-                                <select class="form-control form-control-md" id="edit-incoming-payment-status" required>
+                                <select class="form-control form-control-md" id="edit-incoming-payment-status" required
+                                    disabled>
                                     <option value="">-- Pilih Status Pembayaran --</option>
-                                    <option value="2">Lunas</option>
-                                    <option value="1">Belum Lunas</option>
+                                    <option value="Lunas">Lunas</option>
+                                    <option value="Belum Lunas">Belum Lunas</option>
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
@@ -237,6 +258,84 @@
         </div>
     </div>
     <!-- End Modal Edit -->
+    <!-- Modal Payment -->
+    <div id="modal-add">
+        <div class="modal fade" id="modalAddPaymentInstallment" tabindex="-1" role="dialog"
+            aria-labelledby="modalAddPaymentInstallmentTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLongTitle">Pembayaran Cicilan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            id="button-x-add-payment-installment">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/incoming" method="POST" class="was-validated">
+                            @csrf
+                            @method('POST')
+                            <div class="form-group">
+                                <label for="add-installment-date">Tanggal</label>
+                                <input type="date" class="form-control form-control-lg" id="add-installment-date"
+                                    required>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-installment-price">Cicilan</label>
+                                <input type="number" class="form-control form-control-lg" id="add-installment-price"
+                                    placeholder="Masukkan cicilan" min="0" required disabled>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    id="button-close-add-payment-installment">Tutup</button>
+                                <button type="button" class="btn btn-primary"
+                                    id="add-payment-installment">Tambah</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Payment -->
+    <!-- Modal Show -->
+    <div id="modal-add">
+        <div class="modal fade" id="modalShowPaymentInstallment" tabindex="-1" role="dialog"
+            aria-labelledby="modalShowPaymentInstallmentTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLongTitle">Pembayaran Cicilan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            id="button-x-show-payment-installment">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Tanggal Pembayaran</th>
+                                    <th scope="col">Terbayar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-show-installments">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            id="button-close-show-payment-installment">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Show -->
 @endsection
 
 @section('script')
@@ -316,6 +415,18 @@
                         }
                     },
                     {
+                        data: 'payment_type',
+                        name: 'payment_type',
+                        searchable: true,
+                        orderable: true,
+                    },
+                    {
+                        data: 'total_installment',
+                        name: 'total_installment',
+                        searchable: true,
+                        orderable: true
+                    },
+                    {
                         data: 'paid_off',
                         name: 'paid_off',
                         searchable: true,
@@ -374,6 +485,9 @@
                 let stockIn = $('#incoming-stock-in').val();
                 let totalPrice = price * stockIn;
                 $('#incoming-total-price').val(totalPrice);
+                if ($('#incoming-payment-type').val() == 1) {
+                    $('#incoming-dp').val(totalPrice);
+                }
                 calculatePaidOff();
             }
             $('#incoming-price, #incoming-stock-in').on('input', calculateTotalPrice);
@@ -389,8 +503,35 @@
                 } else {
                     $('#incoming-payment-status').val(1);
                 }
+
             }
             $('#incoming-dp').on('input', calculatePaidOff);
+
+            function paymentTypeCondition() {
+                let paymentType = $('#incoming-payment-type').val();
+                if (paymentType == 1) {
+                    $('#incoming-dp').val($('#incoming-total-price').val());
+                    $('#incoming-dp').attr('disabled', true);
+                    $('#incoming-payment-status').val(2);
+                    $('#incoming-paid-off').val(0);
+                    $('#incoming-total-installment').attr('hidden', true);
+                    $('#incoming-total-installment-label').attr('hidden', true);
+                    $('#incoming-total-installment').removeAttr('required');
+                    $('#incoming-total-installment').attr('min', 0);
+                    $('#incoming-total-installment').val(0);
+                } else if (paymentType == 2) {
+                    $('#incoming-dp').val('');
+                    $('#incoming-dp').attr('disabled', false);
+                    $('#incoming-payment-status').val(1);
+                    $('#incoming-paid-off').val('');
+                    $('#incoming-total-installment').removeAttr('hidden');
+                    $('#incoming-total-installment-label').removeAttr('hidden');
+                    $('#incoming-total-installment').attr('required', true);
+                    $('#incoming-total-installment').attr('min', 2);
+                    $('#incoming-total-installment').val('');
+                }
+            }
+            $('#incoming-payment-type').on('change', paymentTypeCondition);
 
             $('#add-product-incoming').click(function() {
                 var date = $('#incoming-date').val();
@@ -403,6 +544,8 @@
                     var price = $('#incoming-price').val() / 12;
                 }
                 var totalPrice = $('#incoming-total-price').val();
+                var payment_type = $('#incoming-payment-type').val();
+                var total_installment = $('#incoming-total-installment').val();
                 var dp = $('#incoming-dp').val();
                 var paymentStatus = $('#incoming-payment-status').val();
                 var paidOff = $('#incoming-paid-off').val();
@@ -416,6 +559,8 @@
                         stock_in: stockIn,
                         price: price,
                         total_price: totalPrice,
+                        payment_type: payment_type,
+                        total_installment: total_installment,
                         dp: dp,
                         payment_status: paymentStatus,
                         paid_off: paidOff,
@@ -428,10 +573,15 @@
                         $('#incoming-unit').val('');
                         $('#incoming-price').val('');
                         $('#incoming-total-price').val('');
+                        $('#incoming-payment-type').val('');
+                        $('#incoming-total-installment').val('');
                         $('#incoming-dp').val('');
-                        $('#incoming-payment-status').val('');
+                        $('#incoming-payment-status').val(1);
                         $('#incoming-paid-off').val('');
                         $('#modalAddProductIncoming').modal('hide');
+                        $('#incoming-total-installment').attr('hidden', true);
+                        $('#incoming-total-installment-label').attr('hidden', true);
+                        $('#incoming-total-installment').removeAttr('required');
                         $('#table-product-incoming').DataTable().ajax.reload();
                         Swal.fire({
                             icon: "success",
@@ -486,7 +636,6 @@
 
             $(document).on('click', '.button-edit-product-incoming', function() {
                 selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
-
                 let date = selectedData.datetime_incoming;
                 let dateParts = date.split('-');
                 let formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
@@ -497,13 +646,9 @@
                 $('#edit-incoming-price').val(selectedData.price);
                 $('#edit-incoming-total-price').val(selectedData.total_price);
                 $('#edit-incoming-dp').val(selectedData.dp);
-                if (selectedData.payment_status == 'Belum Lunas') {
-                    selectedData.payment_status = 1;
-                } else {
-                    selectedData.payment_status = 2;
-                }
                 $('#edit-incoming-payment-status').val(selectedData.payment_status);
                 $('#edit-incoming-paid-off').val(selectedData.paid_off);
+                paymentStatus();
                 $('#modalEditProductIncoming').modal('show');
             });
 
@@ -535,12 +680,28 @@
                 $('#edit-incoming-paid-off').val(paidOff);
                 $('#edit-incoming-dp').attr('max', totalPrice);
                 if (paidOff == 0) {
-                    $('#edit-incoming-payment-status').val(2);
+                    $('#edit-incoming-payment-status').val('Lunas');
                 } else {
-                    $('#edit-incoming-payment-status').val(1);
+                    $('#edit-incoming-payment-status').val('Belum Lunas');
                 }
+                paymentStatus();
             }
             $('#edit-incoming-dp').on('input', calculateEditPaidOff);
+
+            function paymentStatus() {
+                let status = $('#edit-incoming-payment-status').val();
+                if (status == 'Belum Lunas' && selectedData.total_detail_installments == 0) {
+                    $('#edit-incoming-dp').removeAttr('disabled', false);
+                    $('#edit-incoming-price').removeAttr('disabled', false);
+                    $('#edit-incoming-stock-in').removeAttr('disabled', false);
+                    $('#edit-incoming-unit').removeAttr('disabled', false);
+                } else if (status == 'Lunas' || selectedData.total_detail_installments > 0) {
+                    $('#edit-incoming-dp').attr('disabled', true);
+                    $('#edit-incoming-price').attr('disabled', true);
+                    $('#edit-incoming-stock-in').attr('disabled', true);
+                    $('#edit-incoming-unit').attr('disabled', true);
+                }
+            }
 
             $('#edit-product-incoming').click(function() {
                 var date = $('#edit-incoming-date').val();
@@ -554,7 +715,11 @@
                 }
                 var totalPrice = $('#edit-incoming-total-price').val();
                 var dp = $('#edit-incoming-dp').val();
-                var paymentStatus = $('#edit-incoming-payment-status').val();
+                if ($('#edit-incoming-payment-status').val() == 'Belum Lunas') {
+                    var paymentStatus = 'Belum';
+                } else {
+                    var paymentStatus = $('#edit-incoming-payment-status').val();
+                }
                 var paidOff = $('#edit-incoming-paid-off').val();
 
                 $.ajax({
@@ -647,6 +812,94 @@
                         });
                     }
                 });
+            });
+
+            $(document).on('click', '.button-pay-installment', function() {
+                selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
+                var price = selectedData.paid_off / selectedData.total_installment;
+                $('#modalAddPaymentInstallment').modal('show');
+                $('#add-installment-date').val(dateNow());
+                $('#add-installment-price').val(price);
+            });
+
+            $('#add-payment-installment').on('click', function() {
+                var datetime_payment = $('#add-installment-date').val();
+                var installment = $('#add-installment-price').val();
+                $.ajax({
+                    url: '/cash-flow',
+                    type: 'POST',
+                    data: {
+                        datetime_payment: datetime_payment,
+                        installment: installment,
+                        product_incoming_id: selectedData.id,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        $('#add-installment-date').val('');
+                        $('#add-installment-price').val('');
+                        $('#modalAddPaymentInstallment').modal('hide');
+                        $('#table-product-incoming').DataTable().ajax.reload();
+                        Swal.fire({
+                            icon: "success",
+                            title: data.title,
+                            text: data.message,
+                            confirmButtonColor: "#3085d6",
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: "error",
+                            title: xhr.responseJSON.title,
+                            text: xhr.responseJSON.message,
+                            confirmButtonColor: "#3085d6",
+                        });
+                    }
+                });
+            });
+
+            $('#button-x-add-payment-installment').on('click', function() {
+                $('#modalAddPaymentInstallment').modal('hide');
+            });
+            $('#button-close-add-payment-installment').on('click', function() {
+                $('#modalAddPaymentInstallment').modal('hide');
+            });
+
+            $(document).on('click', '.button-show-installment', function() {
+                selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
+                let installments = JSON.parse(selectedData.installments);
+                $('#table-show-installments').empty();
+
+                const formatCurrency = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                    currencyDisplay: 'symbol'
+                });
+
+
+                if (selectedData.total_detail_installments == 0) {
+                    $('#table-show-installments').append(
+                        '<tr><td colspan="4" class="text-center">Belum ada cicilan</td></tr>');
+                } else {
+                    installments.map((installment, index) => {
+                        $('#table-show-installments').append(
+                            `<tr>
+                                <td>${index + 1}</td>
+                                <td>${installment.datetime_payment}</td>
+                                <td>${formatCurrency.format(installment.installment).replace(/\./g, ',')}</td>
+                            </tr>`
+                        );
+                    });
+                }
+
+                $('#modalShowPaymentInstallment').modal('show');
+            });
+            $('#button-x-show-payment-installment').on('click', function() {
+                $('#modalShowPaymentInstallment').modal('hide');
+            });
+            $('#button-close-show-payment-installment').on('click', function() {
+                $('#modalShowPaymentInstallment').modal('hide');
             });
         });
     </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductIncoming;
+use App\Models\ProductInstallment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -13,10 +14,10 @@ class ProductIncomingController extends Controller
 {
     public function index(Request $request)
     {
-        $productIncoming = ProductIncoming::with('product')
-            ->orderByRaw('DATE(datetime_incoming) DESC')
-            ->orderBy('product_id', 'DESC')
-            ->get();
+        $productIncoming = ProductIncoming::with(['product', 'productInstallments'])
+        ->orderByRaw('DATE(datetime_incoming) DESC')
+        ->orderBy('product_id', 'DESC')
+        ->get();
 
         if ($request->ajax()) {
             return DataTables::of($productIncoming)
@@ -40,10 +41,22 @@ class ProductIncomingController extends Controller
                     return (string)$incoming->dp;
                 })
                 ->editcolumn('payment_status', function ($incoming) {
-                    return $incoming->payment_status == 'Lunas' ? 'Lunas' : 'Belum Lunas';
+                    return $incoming->payment_status == 'lunas' ? 'Lunas' : 'Belum Lunas';
+                })
+                ->editColumn('payment_type', function ($incoming) {
+                    return $incoming->payment_type == 'cash' ? 'Tunai' : 'Cicilan';
+                })
+                ->editColumn('total_installment', function ($incoming) {
+                    return (string)$incoming->total_installment;
                 })
                 ->editColumn('paid_off', function ($incoming) {
                     return (string)$incoming->paid_off;
+                })
+                ->editColumn('installments', function ($incoming) {
+                    return $incoming->productInstallments;
+                })
+                ->editColumn('total_detail_installments', function ($incoming) {
+                    return $incoming->productInstallments->count();
                 })
                 ->addColumn('action', 'admin.incoming.action')
                 ->toJson();
@@ -53,6 +66,7 @@ class ProductIncomingController extends Controller
             'title' => 'Produk Masuk',
             'active' => 'incoming',
             'products' => Product::all(),
+            'productInstallments' => ProductInstallment::all(),
         ]);
     }
 
@@ -63,6 +77,8 @@ class ProductIncomingController extends Controller
                 'stock_in' => 'required|numeric',
                 'price' => 'required|numeric',
                 'total_price' => 'required|numeric',
+                'payment_type' => 'required',
+                'total_installment' => 'required|numeric|min:0',
                 'dp' => 'required|numeric',
                 'paid_off' => 'required|numeric',
                 'payment_status' => 'required',
@@ -96,6 +112,12 @@ class ProductIncomingController extends Controller
                 return response()->json([
                     'title' => 'Opss...',
                     'message' => 'DP melebihi total harus dibayar',
+                ], 400);
+            }
+            if ($request->payment_type == 2 && $request->total_installment < 2) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Total cicilan tidak boleh kurang dari 2',
                 ], 400);
             }
 
@@ -163,16 +185,16 @@ class ProductIncomingController extends Controller
 
             $preProduct = Product::find($incoming->product_id);
             $preProduct->stock -= $incoming->stock_in;
-            
 
-            if($preProduct->id != $request->product_id){
+
+            if ($preProduct->id != $request->product_id) {
                 $product = Product::find($request->product_id);
-            }else{
+            } else {
                 $product = $preProduct;
             }
             $product->stock += $request->stock_in;
 
-            if($preProduct->stock < 0){
+            if ($preProduct->stock < 0) {
                 return response()->json([
                     'title' => 'Opss...',
                     'message' => 'Stok barang tidak mencukupi',

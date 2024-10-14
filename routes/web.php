@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/report', [ReportController::class, 'store']);
     Route::get('/report-date', [ReportController::class, 'getStockOut']);
     Route::get('/cash-flow', [CashFlowController::class, 'index']);
+    Route::post('/cash-flow', [CashFlowController::class, 'store']);
 
     Route::get('/logout', [AuthUserController::class, 'logout']);
 

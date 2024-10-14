@@ -11,6 +11,7 @@ class ProductInstallment extends Model
 
     protected $fillable = [
         'datetime_payment',
+        'installment',
         'product_incoming_id',
     ];
 

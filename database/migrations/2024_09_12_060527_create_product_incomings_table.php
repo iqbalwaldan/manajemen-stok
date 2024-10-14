@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('total_price');
             $table->integer('dp');
             $table->integer('paid_off');
-            $table->enum('payment_status', ['Belum', 'Lunas']);
+            $table->enum('payment_status', ['belum', 'lunas']);
             $table->enum('payment_type', ['cash', 'installment']);
             $table->integer('total_installment')->nullable();
             $table->dateTime('datetime_incoming');

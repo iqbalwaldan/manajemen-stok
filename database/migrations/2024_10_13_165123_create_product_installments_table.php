@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('product_installments', function (Blueprint $table) {
             $table->id();
             $table->dateTime('datetime_payment');
+            $table->integer('installment');
             $table->unsignedBigInteger('product_incoming_id');
             $table->foreign('product_incoming_id')->references('id')->on('product_incomings')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
