@@ -893,7 +893,7 @@
                 var datetime_payment = $('#add-installment-date').val();
                 var installment = $('#add-installment-price').val();
                 $.ajax({
-                    url: '/Tunai-flow',
+                    url: '/cash-flow',
                     type: 'POST',
                     data: {
                         datetime_payment: datetime_payment,
