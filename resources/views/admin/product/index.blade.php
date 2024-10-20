@@ -14,23 +14,19 @@
                 Tambah Produk
             </button>
         </div>
-        <div class="">
-            <div class="">
-                <table id="table-product" class="">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Id</th>
-                            <th scope="col">Nama</th>
-                            <th scope="col">Tipe</th>
-                            <th scope="col">Harga</th>
-                            <th scope="col">Stok</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+        <table id="table-product" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Tipe</th>
+                    <th scope="col">Harga</th>
+                    <th scope="col">Stok</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 
     <!-- Modal Add -->
@@ -156,10 +152,13 @@
             $('#table-product').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
                 ajax: "/product",
                 columns: [{
                         data: null,
-                        width: 100,
+                        searchable: false,
+                        orderable: false,
+                        width: '50px',
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
@@ -167,6 +166,7 @@
                     {
                         data: 'id',
                         name: 'id',
+                        width: '100px',
                         searchable: true,
                         orderable: true,
                         render: function(data, type, row) {
@@ -177,18 +177,21 @@
                     {
                         data: 'name',
                         name: 'name',
+                        // width: '1000px',
                         searchable: true,
                         orderable: true
                     },
                     {
                         data: 'product_type_name',
                         name: 'product_type_name',
+                        width: '300px',
                         searchable: true,
                         orderable: true
                     },
                     {
                         data: 'price',
                         name: 'price',
+                        width: '150px',
                         searchable: true,
                         orderable: true,
                         render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
@@ -197,13 +200,14 @@
                     {
                         data: 'stock',
                         name: 'stock',
+                        width: '200px',
                         searchable: true,
                         orderable: true
                     },
                     {
-                        width: '150px',
                         data: 'action',
                         name: 'action',
+                        width: '200px',
                         searchable: false,
                         orderable: false
                     },
@@ -269,7 +273,7 @@
                 $('#edit-product-type').val(selectedData.product_type_id);
                 $('#edit-product-price').val(selectedData.price);
                 $('#edit-product-stock').val(selectedData.stock);
-                
+
                 // Cek jika produk dimiliki oleh productOutgoing atau productIncoming
                 if (selectedData.productOutgoing || selectedData.productIncoming) {
                     $('#edit-product-stock').prop('disabled', true);

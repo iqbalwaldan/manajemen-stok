@@ -9,33 +9,30 @@
 
 @section('content')
     <div class="ml-[60px] md:ml-64">
-        <div class="mb-4" style="display: flex; justify-content: end">
+        <div class="mb-4 d-flex justify-content-end">
             <button type="button" id="button-add-product-incoming" class="btn btn-primary">
                 Tambah Produk Masuk
             </button>
         </div>
-        <div class="">
-            <div class="">
-                <table id="table-product-incoming" class="">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Tanggal</th>
-                            <th scope="col">Nama Produk</th>
-                            <th scope="col">Stok Masuk</th>
-                            <th scope="col">Harga</th>
-                            <th scope="col">Total Harga</th>
-                            <th scope="col">DP</th>
-                            <th scope="col">Status Pembayaran</th>
-                            <th scope="col">Tipe Pembayaran</th>
-                            <th scope="col">Jumlah Cicilan</th>
-                            <th scope="col">Pelunasan</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+        <table id="table-product-incoming" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" style="min-width: 50px">No</th>
+                    <th scope="col" style="min-width: 150px">Tanggal</th>
+                    <th scope="col" style="min-width: 300px">Nota Pembelian</th>
+                    <th scope="col" style="min-width: 300px">Nama Produk</th>
+                    <th scope="col" style="min-width: 150px">Stok Masuk</th>
+                    <th scope="col" style="min-width: 150px">Harga/Pcs</th>
+                    <th scope="col" style="min-width: 150px">Total Harga</th>
+                    <th scope="col" style="min-width: 150px">DP</th>
+                    <th scope="col" style="min-width: 150px">Cicilan Terbayar</th>
+                    <th scope="col" style="min-width: 150px">Pelunasan</th>
+                    <th scope="col" style="min-width: 200px">Tipe Pembayaran</th>
+                    <th scope="col" style="min-width: 200px">Status Pembayaran</th>
+                    <th scope="col" style="min-width: 150px">Action</th>
+                </tr>
+            </thead>
+        </table>
     </div>
     <!-- Modal Add -->
     <div id="modal-add">
@@ -57,6 +54,12 @@
                             <div class="form-group">
                                 <label for="incoming-date">Tanggal</label>
                                 <input type="date" class="form-control form-control-lg" id="incoming-date" required>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="incoming-invoice">Nota Pembayaran</label>
+                                <input type="text" class="form-control form-control-lg" id="incoming-invoice"
+                                    placeholder="Masukkan nota pembayaran" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group form-group-custom">
@@ -110,14 +113,15 @@
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label id="incoming-total-installment-label" for="incoming-total-installment"
-                                    hidden>Jumlah Cicilan</label>
+                                    hidden>Jumlah
+                                    Cicilan</label>
                                 <input type="number" class="form-control form-control-lg"
                                     id="incoming-total-installment" placeholder="Masukkan jumalah cicilan" min="0"
                                     hidden>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="incoming-dp">DP</label>
                                 <input type="number" class="form-control form-control-lg" id="incoming-dp"
@@ -173,6 +177,12 @@
                                 <label for="edit-incoming-date">Tanggal</label>
                                 <input type="date" class="form-control form-control-lg" id="edit-incoming-date"
                                     required>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-incoming-invoice">Nota Pembayaran</label>
+                                <input type="text" class="form-control form-control-lg" id="edit-incoming-invoice"
+                                    placeholder="Masukkan nota pembayaran" required>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
                             <div class="form-group form-group-custom">
@@ -233,14 +243,14 @@
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label id="edit-incoming-total-installment-label" for="edit-incoming-total-installment"
                                     hidden disabled>Jumlah Cicilan</label>
                                 <input type="number" class="form-control form-control-lg"
                                     id="edit-incoming-total-installment" placeholder="Masukkan jumalah cicilan"
                                     min="0" hidden disabled>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="edit-incoming-dp">DP</label>
                                 <input type="number" class="form-control form-control-lg" id="edit-incoming-dp"
@@ -276,7 +286,7 @@
     </div>
     <!-- End Modal Edit -->
     <!-- Modal Payment -->
-    <div id="modal-add">
+    <div id="modal-payment">
         <div class="modal fade" id="modalAddPaymentInstallment" tabindex="-1" role="dialog"
             aria-labelledby="modalAddPaymentInstallmentTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -301,8 +311,8 @@
                             <div class="form-group">
                                 <label for="add-installment-price">Cicilan</label>
                                 <input type="number" class="form-control form-control-lg" id="add-installment-price"
-                                    placeholder="Masukkan cicilan" min="0" required disabled>
-                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                                    placeholder="Masukkan cicilan" min="0" required>
+                                <div class="invalid-feedback">Isian tidak valid!</div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"
@@ -318,7 +328,7 @@
     </div>
     <!-- End Modal Payment -->
     <!-- Modal Show -->
-    <div id="modal-add">
+    <div id="modal-show">
         <div class="modal fade" id="modalShowPaymentInstallment" tabindex="-1" role="dialog"
             aria-labelledby="modalShowPaymentInstallmentTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -337,10 +347,10 @@
                                     <th scope="col">No</th>
                                     <th scope="col">Tanggal Pembayaran</th>
                                     <th scope="col">Terbayar</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="table-show-installments">
-
                             </tbody>
                         </table>
                     </div>
@@ -353,6 +363,48 @@
         </div>
     </div>
     <!-- End Modal Show -->
+    <!-- Modal Show Edit -->
+    <div id="modal-show-edit">
+        <div class="modal fade" id="modalShowEditInstallments" tabindex="-1" role="dialog"
+            aria-labelledby="modalShowEditInstallmentsTitle" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLongTitle">Pembayaran Cicilan</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            id="button-x-show-edit-installment">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/incoming" method="POST" class="was-validated">
+                            @csrf
+                            @method('POST')
+                            <div class="form-group">
+                                <label for="edit-installment-date">Tanggal</label>
+                                <input type="date" class="form-control form-control-lg" id="edit-installment-date"
+                                    required>
+                                <div class="invalid-feedback">Isian tidak boleh kosong!</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-installment-price">Cicilan</label>
+                                <input type="number" class="form-control form-control-lg" id="edit-installment-price"
+                                    placeholder="Masukkan cicilan" min="0" required>
+                                <div class="invalid-feedback">Isian tidak valid!</div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    id="button-close-show-edit-installment">Tutup</button>
+                                <button type="button" class="btn btn-primary"
+                                    id="button-save-show-edit-installment">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Show Edit-->
 @endsection
 
 @section('script')
@@ -363,12 +415,14 @@
             $('#table-product-incoming').DataTable({
                 processing: true,
                 serverSide: true,
+                scrollX: true,
+                autoWidth: true,
+                responsive: true,
                 ajax: "/incoming",
                 columns: [{
                         data: null,
                         searchable: false,
                         orderable: false,
-                        width: 100,
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
@@ -376,6 +430,12 @@
                     {
                         data: 'datetime_incoming',
                         name: 'datetime_incoming',
+                        searchable: true,
+                        orderable: true,
+                    },
+                    {
+                        data: 'invoice',
+                        name: 'invoice',
                         searchable: true,
                         orderable: true
                     },
@@ -417,6 +477,26 @@
                         render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
+                        data: 'total_payment',
+                        name: 'total_payment',
+                        searchable: true,
+                        orderable: true,
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
+                    },
+                    {
+                        data: 'paid_off',
+                        name: 'paid_off',
+                        searchable: true,
+                        orderable: true,
+                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
+                    },
+                    {
+                        data: 'payment_type',
+                        name: 'payment_type',
+                        searchable: true,
+                        orderable: true,
+                    },
+                    {
                         data: 'payment_status',
                         name: 'payment_status',
                         searchable: true,
@@ -430,25 +510,6 @@
                                     data + '</span>';
                             }
                         }
-                    },
-                    {
-                        data: 'payment_type',
-                        name: 'payment_type',
-                        searchable: true,
-                        orderable: true,
-                    },
-                    {
-                        data: 'total_installment',
-                        name: 'total_installment',
-                        searchable: true,
-                        orderable: true
-                    },
-                    {
-                        data: 'paid_off',
-                        name: 'paid_off',
-                        searchable: true,
-                        orderable: true,
-                        render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ')
                     },
                     {
                         width: '160px',
@@ -531,21 +592,21 @@
                     $('#incoming-dp').attr('disabled', true);
                     $('#incoming-payment-status').val(2);
                     $('#incoming-paid-off').val(0);
-                    $('#incoming-total-installment').attr('hidden', true);
-                    $('#incoming-total-installment-label').attr('hidden', true);
-                    $('#incoming-total-installment').removeAttr('required');
-                    $('#incoming-total-installment').attr('min', 0);
-                    $('#incoming-total-installment').val(0);
+                    // $('#incoming-total-installment').attr('hidden', true);
+                    // $('#incoming-total-installment-label').attr('hidden', true);
+                    // $('#incoming-total-installment').removeAttr('required');
+                    // $('#incoming-total-installment').attr('min', 0);
+                    // $('#incoming-total-installment').val(0);
                 } else if (paymentType == 2) {
                     $('#incoming-dp').val('');
                     $('#incoming-dp').attr('disabled', false);
                     $('#incoming-payment-status').val(1);
                     $('#incoming-paid-off').val('');
-                    $('#incoming-total-installment').removeAttr('hidden');
-                    $('#incoming-total-installment-label').removeAttr('hidden');
-                    $('#incoming-total-installment').attr('required', true);
-                    $('#incoming-total-installment').attr('min', 2);
-                    $('#incoming-total-installment').val('');
+                    // $('#incoming-total-installment').removeAttr('hidden');
+                    // $('#incoming-total-installment-label').removeAttr('hidden');
+                    // $('#incoming-total-installment').attr('required', true);
+                    // $('#incoming-total-installment').attr('min', 2);
+                    // $('#incoming-total-installment').val('');
                 }
             }
             $('#incoming-payment-type').on('change', paymentTypeCondition);
@@ -562,7 +623,8 @@
                 }
                 var totalPrice = $('#incoming-total-price').val();
                 var payment_type = $('#incoming-payment-type').val();
-                var total_installment = $('#incoming-total-installment').val();
+                // var total_installment = $('#incoming-total-installment').val();
+                var invoice = $('#incoming-invoice').val();
                 var dp = $('#incoming-dp').val();
                 var paymentStatus = $('#incoming-payment-status').val();
                 var paidOff = $('#incoming-paid-off').val();
@@ -577,7 +639,8 @@
                         price: price,
                         total_price: totalPrice,
                         payment_type: payment_type,
-                        total_installment: total_installment,
+                        // total_installment: total_installment,
+                        invoice: invoice,
                         dp: dp,
                         payment_status: paymentStatus,
                         paid_off: paidOff,
@@ -591,14 +654,15 @@
                         $('#incoming-price').val('');
                         $('#incoming-total-price').val('');
                         $('#incoming-payment-type').val('');
-                        $('#incoming-total-installment').val('');
+                        // $('#incoming-total-installment').val('');
+                        $('#incoming-invoice').val('');
                         $('#incoming-dp').val('');
                         $('#incoming-payment-status').val(1);
                         $('#incoming-paid-off').val('');
                         $('#modalAddProductIncoming').modal('hide');
-                        $('#incoming-total-installment').attr('hidden', true);
-                        $('#incoming-total-installment-label').attr('hidden', true);
-                        $('#incoming-total-installment').removeAttr('required');
+                        // $('#incoming-total-installment').attr('hidden', true);
+                        // $('#incoming-total-installment-label').attr('hidden', true);
+                        // $('#incoming-total-installment').removeAttr('required');
                         $('#table-product-incoming').DataTable().ajax.reload();
                         Swal.fire({
                             icon: "success",
@@ -664,12 +728,15 @@
                 $('#edit-incoming-total-price').val(selectedData.total_price);
                 let paymentType = selectedData.payment_type == 'Tunai' ? 1 : 2;
                 $('#edit-incoming-payment-type').val(paymentType);
-                $('#edit-incoming-total-installment').val(selectedData.total_installment);
+                // $('#edit-incoming-total-installment').val(selectedData.total_installment);
+                $('#edit-incoming-invoice').val(selectedData.invoice);
                 $('#edit-incoming-dp').val(selectedData.dp);
                 $('#edit-incoming-payment-status').val(selectedData.payment_status);
-                $('#edit-incoming-paid-off').val(selectedData.paid_off);
+                let paidOff = selectedData.paid_off == '-' ? 0 : selectedData.paid_off;
+                $('#edit-incoming-paid-off').val(paidOff);
                 paymentStatus();
-                if (selectedData.total_detail_installments > 0 || $('#edit-incoming-payment-status').val() == 'Lunas') {
+                if (selectedData.total_detail_installments > 0 || $('#edit-incoming-payment-status')
+                    .val() == 'Lunas') {
                     $('#edit-incoming-payment-type').attr('disabled', true);
                 } else {
                     $('#edit-incoming-payment-type').removeAttr('disabled', false);
@@ -718,14 +785,13 @@
                 if (paymentType == 1) {
                     paymentStatus();
                     $('#edit-incoming-dp').val($('#edit-incoming-total-price').val());
-                    $('#edit-incoming-total-installment').val(0);
+                    // $('#edit-incoming-total-installment').val(0);
                     calculateEditPaidOff();
-                    $('#edit-incoming-total-installment-label').attr('disabled', true);
-                    $('#edit-incoming-total-installment').attr('disabled', true);
-                    $('#edit-incoming-total-installment-label').attr('hidden', true);
-                    $('#edit-incoming-total-installment').attr('hidden', true);
-                    $('#edit-incoming-total-installment').attr('min', 0);
-                    
+                    // $('#edit-incoming-total-installment-label').attr('disabled', true);
+                    // $('#edit-incoming-total-installment').attr('disabled', true);
+                    // $('#edit-incoming-total-installment-label').attr('hidden', true);
+                    // $('#edit-incoming-total-installment').attr('hidden', true);
+                    // $('#edit-incoming-total-installment').attr('min', 0);
                 } else {
                     paymentStatus();
                     $('#edit-incoming-dp').val(0);
@@ -749,20 +815,20 @@
                     $('#edit-incoming-stock-in').removeAttr('disabled', false);
                     $('#edit-incoming-unit').removeAttr('disabled', false);
                     // $('#edit-incoming-payment-type').removeAttr('disabled', false);
-                    $('#edit-incoming-total-installment-label').removeAttr('disabled', false);
-                    $('#edit-incoming-total-installment').removeAttr('disabled', false);
-                    $('#edit-incoming-total-installment-label').removeAttr('hidden', false);
-                    $('#edit-incoming-total-installment').removeAttr('hidden', false);
+                    // $('#edit-incoming-total-installment-label').removeAttr('disabled', false);
+                    // $('#edit-incoming-total-installment').removeAttr('disabled', false);
+                    // $('#edit-incoming-total-installment-label').removeAttr('hidden', false);
+                    // $('#edit-incoming-total-installment').removeAttr('hidden', false);
                 } else if (status == 'Lunas' || selectedData.total_detail_installments > 0 || paymentType == 1) {
                     $('#edit-incoming-dp').attr('disabled', true);
                     $('#edit-incoming-price').attr('disabled', true);
                     $('#edit-incoming-stock-in').attr('disabled', true);
                     $('#edit-incoming-unit').attr('disabled', true);
                     // $('#edit-incoming-payment-type').attr('disabled', true);
-                    $('#edit-incoming-total-installment-label').attr('disabled', true);
-                    $('#edit-incoming-total-installment').attr('disabled', true);
-                    $('#edit-incoming-total-installment-label').attr('hidden', true);
-                    $('#edit-incoming-total-installment').attr('hidden', true);
+                    // $('#edit-incoming-total-installment-label').attr('disabled', true);
+                    // $('#edit-incoming-total-installment').attr('disabled', true);
+                    // $('#edit-incoming-total-installment-label').attr('hidden', true);
+                    // $('#edit-incoming-total-installment').attr('hidden', true);
                 }
             }
 
@@ -784,7 +850,8 @@
                 var totalPrice = $('#edit-incoming-total-price').val();
                 var paymentType = $('#edit-incoming-payment-type').val();
                 var dp = $('#edit-incoming-dp').val();
-                var totalInstallment = $('#edit-incoming-total-installment').val();
+                // var totalInstallment = $('#edit-incoming-total-installment').val();
+                var invoice = $('#edit-incoming-invoice').val();
                 var paidOff = $('#edit-incoming-paid-off').val();
 
                 $.ajax({
@@ -797,7 +864,8 @@
                         price: price,
                         total_price: totalPrice,
                         payment_type: paymentType,
-                        total_installment: totalInstallment,
+                        // total_installment: totalInstallment,
+                        invoice: invoice,
                         dp: dp,
                         payment_status: paymentStatus,
                         paid_off: paidOff,
@@ -805,6 +873,7 @@
                     },
                     success: function(data) {
                         $('#edit-incoming-date').val('');
+                        $('#edit-incoming-invoice').val('');
                         $('#edit-incoming-product-name').val('');
                         $('#edit-incoming-stock-in').val('');
                         $('#edit-incoming-unit').val('');
@@ -883,10 +952,11 @@
 
             $(document).on('click', '.button-pay-installment', function() {
                 selectedData = $('#table-product-incoming').DataTable().row($(this).parents('tr')).data();
-                var price = selectedData.paid_off / selectedData.total_installment;
+                // var price = selectedData.paid_off / selectedData.total_installment;
                 $('#modalAddPaymentInstallment').modal('show');
                 $('#add-installment-date').val(dateNow());
-                $('#add-installment-price').val(price);
+                $('#add-installment-price').attr('max', selectedData.paid_off);
+                $('#add-installment-price').val();
             });
 
             $('#add-payment-installment').on('click', function() {
@@ -944,6 +1014,15 @@
                     currencyDisplay: 'symbol'
                 });
 
+                const formatDateDMY = (dateString) => {
+                    const date = new Date(dateString);
+                    const day = ("0" + date.getDate()).slice(-2); // Ambil 2 digit hari
+                    const month = ("0" + (date.getMonth() + 1)).slice(-
+                        2); // Ambil 2 digit bulan (getMonth mulai dari 0)
+                    const year = date.getFullYear(); // Tahun dengan 4 digit
+                    return `${day}-${month}-${year}`;
+                };
+
 
                 if (selectedData.total_detail_installments == 0) {
                     $('#table-show-installments').append(
@@ -953,8 +1032,11 @@
                         $('#table-show-installments').append(
                             `<tr>
                                 <td>${index + 1}</td>
-                                <td>${installment.datetime_payment}</td>
+                                <td>${formatDateDMY(installment.datetime_payment)}</td>
                                 <td>${formatCurrency.format(installment.installment).replace(/\./g, ',')}</td>
+                                <td hidden>${installment.id}</td>
+                                <td><button class="button-edit-show-installments btn btn-warning d-flex justify-content-center align-items-center" style="width: 40px; height: 40px;">
+                                <i class="fa-regular fa-pen-to-square text-green-900"></i></button></td>
                             </tr>`
                         );
                     });
@@ -967,6 +1049,64 @@
             });
             $('#button-close-show-payment-installment').on('click', function() {
                 $('#modalShowPaymentInstallment').modal('hide');
+            });
+
+            var idEditInstallments = null;
+
+            $(document).on('click', '.button-edit-show-installments', function() {
+                const row = $(this).closest('tr');
+                const date = row.find('td').eq(1).text();
+                const price = row.find('td').eq(2).text().replace(/[Rp.,]/g, '');
+                idEditInstallments = row.find('td').eq(3).text();
+                const convertDateToYMD = (date) => {
+                    const [day, month, year] = date.split('-');
+                    return `${year}-${month}-${day}`;
+                };
+                $('#modalShowEditInstallments').modal('show');
+                $('#edit-installment-date').val(convertDateToYMD(date));
+                $('#edit-installment-price').val(parseInt(price));
+            });
+
+            $('#button-save-show-edit-installment').on('click', function() {
+                var datetime_payment = $('#edit-installment-date').val();
+                var installment = $('#edit-installment-price').val();
+                var product_incoming_id = selectedData.id;
+                $.ajax({
+                    url: '/cash-flow/' + idEditInstallments,
+                    type: 'POST',
+                    data: {
+                        datetime_payment: datetime_payment,
+                        installment: installment,
+                        product_incoming_id: selectedData.id,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        $('#add-installment-date').val('');
+                        $('#add-installment-price').val('');
+                        $('#modalShowEditInstallments').modal('hide');
+                        $('#table-product-incoming').DataTable().ajax.reload();
+                        Swal.fire({
+                            icon: "success",
+                            title: data.title,
+                            text: data.message,
+                            confirmButtonColor: "#3085d6",
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: "error",
+                            title: xhr.responseJSON.title,
+                            text: xhr.responseJSON.message,
+                            confirmButtonColor: "#3085d6",
+                        });
+                    }
+                });
+            });
+            $('#button-x-show-edit-installment').on('click', function() {
+                $('#modalShowEditInstallments').modal('hide');
+            });
+            $('#button-close-show-edit-installment').on('click', function() {
+                $('#modalShowEditInstallments').modal('hide');
             });
         });
     </script>

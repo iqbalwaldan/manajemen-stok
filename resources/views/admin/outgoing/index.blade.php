@@ -9,32 +9,28 @@
 
 @section('content')
     <div class="ml-[60px] md:ml-64">
-        <div class="mb-4" style="display: flex; justify-content: end">
+        <div class="mb-4 d-flex justify-content-end">
             <button type="button" id="button-add-product-outgoing" class="btn btn-primary">
                 Tambah Produk Keluar
             </button>
         </div>
-        <div class="">
-            <div class="">
-                <table id="table-product-outgoing" class="">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Tanggal</th>
-                            <th scope="col">Nama Pembeli</th>
-                            <th scope="col">Marketplace</th>
-                            <th scope="col">Nama Produk</th>
-                            <th scope="col">Stok Keluar</th>
-                            <th scope="col">Harga Beli</th>
-                            <th scope="col">Harga Jual</th>
-                            <th scope="col">Total Harga</th>
-                            <th scope="col">Keuntungan</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+        <table id="table-product-outgoing" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" style="min-width: 50px">No</th>
+                    <th scope="col" style="min-width: 150px">Tanggal</th>
+                    <th scope="col" style="min-width: 150px">Nama Pembeli</th>
+                    <th scope="col" style="min-width: 150px">Marketplace</th>
+                    <th scope="col" style="min-width: 300px">Nama Produk</th>
+                    <th scope="col" style="min-width: 150px">Stok Keluar</th>
+                    <th scope="col" style="min-width: 150px">Harga Beli</th>
+                    <th scope="col" style="min-width: 150px">Harga Jual</th>
+                    <th scope="col" style="min-width: 150px">Total Harga</th>
+                    <th scope="col" style="min-width: 150px">Keuntungan</th>
+                    <th scope="col" style="min-width: 150px">Action</th>
+                </tr>
+            </thead>
+        </table>
     </div>
     <!-- Modal Add -->
     <div id="modal-add">
@@ -75,7 +71,6 @@
                                 </select>
                                 <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                             </div>
-                            <!-- Input text untuk pilihan 'Lainnya' -->
                             <div class="form-group" id="marketplace-form" style="display: none;">
                                 <label for="marketplace-other">Masukkan Nama Marketplace</label>
                                 <input type="text" class="form-control" id="marketplace-other"
@@ -224,8 +219,9 @@
                                 <label for="edit-outgoing-stock-out">Stok Keluar</label>
                                 <div style="display: flex; gap: 10px;">
                                     <div style="width: 100%">
-                                        <input type="number" class="form-control form-control-lg" id="edit-outgoing-stock-out"
-                                            placeholder="Masukkan stok keluar" min="1" required>
+                                        <input type="number" class="form-control form-control-lg"
+                                            id="edit-outgoing-stock-out" placeholder="Masukkan stok keluar"
+                                            min="1" required>
                                         <div class="invalid-feedback">Isian tidak boleh kosong!</div>
                                     </div>
                                     <div style="width: 100%">
@@ -285,6 +281,9 @@
             $('#table-product-outgoing').DataTable({
                 processing: true,
                 serverSide: true,
+                scrollX: true,
+                autoWidth: true,
+                responsive: true,
                 ajax: "/outgoing",
                 columns: [{
                         data: null,
@@ -421,19 +420,20 @@
                 $('#outgoing-profit').val(profit);
             }
 
-            $('#outgoing-purchase-price, #outgoing-selling-price, #outgoing-stock-out').on('input', calculateTotalPrice);
+            $('#outgoing-purchase-price, #outgoing-selling-price, #outgoing-stock-out').on('input',
+                calculateTotalPrice);
             $('#outgoing-unit').on('change', calculateTotalPrice);
-            
+
             $('#outgoing-marketplace').on('change', function() {
                 var selectedValue = $(this).val();
 
                 if (selectedValue === 'lainnya') {
-                    $('#marketplace-form').show(); 
-                    $('#marketplace-other').attr('required', true); 
+                    $('#marketplace-form').show();
+                    $('#marketplace-other').attr('required', true);
                 } else {
-                    $('#marketplace-form').hide(); 
+                    $('#marketplace-form').hide();
                     $('#marketplace-other').val('');
-                    $('#marketplace-other').attr('required', false); 
+                    $('#marketplace-other').attr('required', false);
                 }
             });
 
@@ -609,7 +609,8 @@
                 $('#edit-outgoing-total-price').val(totalPrice);
                 calculateEditProfit();
             }
-            $('#edit-outgoing-purchase-price, #edit-outgoing-selling-price, #edit-outgoing-stock-out').on('input', calculateEditTotalPrice);
+            $('#edit-outgoing-purchase-price, #edit-outgoing-selling-price, #edit-outgoing-stock-out').on('input',
+                calculateEditTotalPrice);
             $('#edit-outgoing-unit').on('change', calculateEditTotalPrice);
 
             function calculateEditProfit() {

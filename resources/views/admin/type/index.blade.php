@@ -9,24 +9,20 @@
 
 @section('content')
     <div class="ml-[60px] md:ml-64">
-        <div class="mb-4" style="display: flex; justify-content: end">
+        <div class="mb-4 d-flex justify-content-end">
             <button type="button" id="button-add-product-type" class="btn btn-primary">
                 Tambah Tipe Produk
             </button>
         </div>
-        <div class="">
-            <div class="">
-                <table id="table-product-type" class="">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Nama</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+        <table id="table-product-type" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+        </table>
     </div>
     <!-- Modal Add -->
     <div id="modal-add">
@@ -106,31 +102,33 @@
             $('#table-product-type').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
                 ajax: "/type",
                 columns: [{
+                        // title: 'No',
                         data: null,
                         searchable: false,
                         orderable: false,
-                        width: 100,
+                        width: '50px',
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
                     {
                         data: 'name',
-                        name: 'name'
+                        name: 'name',
                     },
                     {
-                        width: '150px',
                         data: 'action',
-                        name: 'action'
+                        name: 'action',
+                        width: '150px',
                     },
                 ]
             });
 
             $('#form-add').on('submit', function(e) {
-                e.preventDefault(); 
-                $('#add-product-type').click(); 
+                e.preventDefault();
+                $('#add-product-type').click();
             });
 
             $('#add-product-type').click(function() {
@@ -182,8 +180,8 @@
             });
 
             $('#form-edit').on('submit', function(e) {
-                e.preventDefault(); 
-                $('#save-edit-product-type').click(); 
+                e.preventDefault();
+                $('#save-edit-product-type').click();
             });
 
             $('#save-edit-product-type').click(function() {

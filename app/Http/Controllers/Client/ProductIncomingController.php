@@ -46,10 +46,13 @@ class ProductIncomingController extends Controller
                 ->editColumn('payment_type', function ($incoming) {
                     return $incoming->payment_type == 'cash' ? 'Tunai' : 'Cicil';
                 })
-                ->editColumn('total_installment', function ($incoming) {
-                    return (string)$incoming->total_installment;
+                ->editColumn('invoice', function ($incoming) {
+                    return (string)$incoming->invoice;
                 })
                 ->editColumn('paid_off', function ($incoming) {
+                    if ($incoming->payment_type == 'cash') {
+                        return '-';
+                    }
                     return (string)$incoming->paid_off;
                 })
                 ->editColumn('installments', function ($incoming) {
@@ -57,6 +60,9 @@ class ProductIncomingController extends Controller
                 })
                 ->editColumn('total_detail_installments', function ($incoming) {
                     return $incoming->productInstallments->count();
+                })
+                ->addColumn('total_payment', function ($incoming) {
+                    return (string)$incoming->productInstallments->sum('installment');
                 })
                 ->addColumn('action', 'admin.incoming.action')
                 ->toJson();
@@ -78,7 +84,8 @@ class ProductIncomingController extends Controller
                 'price' => 'required|numeric',
                 'total_price' => 'required|numeric',
                 'payment_type' => 'required',
-                'total_installment' => 'required|numeric|min:0',
+                // 'total_installment' => 'required|numeric|min:0',
+                'invoice' => 'required',
                 'dp' => 'required|numeric',
                 'paid_off' => 'required|numeric',
                 'payment_status' => 'required',
@@ -114,12 +121,12 @@ class ProductIncomingController extends Controller
                     'message' => 'DP melebihi total harus dibayar',
                 ], 400);
             }
-            if ($request->payment_type == 2 && $request->total_installment < 2) {
-                return response()->json([
-                    'title' => 'Opss...',
-                    'message' => 'Total cicilan tidak boleh kurang dari 2',
-                ], 400);
-            }
+            // if ($request->payment_type == 2 && $request->total_installment < 2) {
+            //     return response()->json([
+            //         'title' => 'Opss...',
+            //         'message' => 'Total cicilan tidak boleh kurang dari 2',
+            //     ], 400);
+            // }
 
             ProductIncoming::create($request->all());
 
@@ -148,7 +155,8 @@ class ProductIncomingController extends Controller
                 'price' => 'required|numeric',
                 'total_price' => 'required|numeric',
                 'payment_type' => 'required',
-                'total_installment' => 'required|numeric|min:0',
+                // 'total_installment' => 'required|numeric|min:0',
+                'invoice' => 'required',
                 'dp' => 'required|numeric',
                 'paid_off' => 'required|numeric',
                 'payment_status' => 'required',
@@ -185,12 +193,12 @@ class ProductIncomingController extends Controller
                 ], 400);
             }
 
-            if ($request->payment_type == 2 && $request->total_installment < 2 && $incoming->payment_type == 2) {
-                return response()->json([
-                    'title' => 'Opss...',
-                    'message' => 'Total cicilan tidak boleh kurang dari 2',
-                ], 400);
-            }
+            // if ($request->payment_type == 2 && $request->total_installment < 2 && $incoming->payment_type == 2) {
+            //     return response()->json([
+            //         'title' => 'Opss...',
+            //         'message' => 'Total cicilan tidak boleh kurang dari 2',
+            //     ], 400);
+            // }
 
             $preProduct = Product::find($incoming->product_id);
             $preProduct->stock -= $incoming->stock_in;
@@ -230,7 +238,12 @@ class ProductIncomingController extends Controller
     {
         try {
             $product = Product::find($incoming->product_id);
-            $product->stock -= $incoming->stock_in;
+            if ($product->stock -= $incoming->stock_in < 0) {
+                return response()->json([
+                    'title' => 'Opss...',
+                    'message' => 'Stok barang tidak mencukupi',
+                ], 400);
+            }
             $product->save();
             $incoming->delete();
             return response()->json([

@@ -101,3 +101,7 @@ div.form-group {
 .form-group-custom {
     position: relative;
 }
+
+.dataTables_wrapper {
+    overflow-x: auto; /* Aktifkan pengguliran saat overflow */
+}

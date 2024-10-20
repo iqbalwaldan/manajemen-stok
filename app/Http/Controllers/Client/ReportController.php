@@ -37,7 +37,7 @@ class ReportController extends Controller
             return DataTables::of($reports)
                 ->addIndexColumn()
                 ->editColumn('datetime_report', function ($reports) {
-                    return $reports->datetime_report->format('Y-m-d');
+                    return $reports->datetime_report->format('d-m-Y');
                 })
                 ->editColumn('profit', function ($reports) {
                     return 'Rp ' . number_format($reports->profit, 0, ',', '.');

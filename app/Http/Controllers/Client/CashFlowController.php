@@ -18,6 +18,7 @@ class CashFlowController extends Controller
         $totalDp = ProductIncoming::where('payment_type', 'installment')->sum('dp');
         $totalPaidOff = ProductIncoming::where('payment_type', 'installment')->sum('paid_off');
         $totalOutcomeInstallments = ProductIncoming::where('payment_type', 'installment')->sum('total_price');
+        $totalInstallment = ProductInstallment::sum('installment');
         $totalOutcome = ProductIncoming::sum('total_price');
 
         $installments = ProductInstallment::with('productIncoming.product')
@@ -50,6 +51,7 @@ class CashFlowController extends Controller
             'active' => 'cash-flow',
             'totalDp' => $totalDp,
             'totalPaidOff' => $totalPaidOff,
+            'totalInstallment' => $totalInstallment,
             'totalOutcomeInstallments' => $totalOutcomeInstallments,
             'totalOutcome' => $totalOutcome,
         ]);
@@ -68,9 +70,8 @@ class CashFlowController extends Controller
         ]);
 
         $income = ProductIncoming::find($request->product_incoming_id);
-        $income->paid_off -= $request->installment;
-        $income->total_installment -= 1;
-        if ($income->total_installment == 0) {
+        $status = $income->paid_off -= $request->installment;
+        if ($status == 0) {
             $income->payment_status = 'lunas';
         }
         ProductInstallment::create($request->all());
@@ -79,6 +80,39 @@ class CashFlowController extends Controller
         return response()->json([
             'title' => 'Success!',
             'message' => 'Data cicilan berhasil ditambahkan',
+        ], 200);
+    }
+
+    public function update(Request $request, ProductInstallment $installments){
+        $request->validate([
+            'datetime_payment' => 'required',
+            'installment' => 'required|numeric|min:0',
+            'product_incoming_id' => 'required',
+        ]);
+
+        $request->merge([
+            'datetime_payment' => $request->datetime_payment . ' ' . now()->format('H:i:s'),
+        ]);
+
+        $incoming = ProductIncoming::find($request->product_incoming_id);
+        $install = ProductInstallment::find($installments->id);
+        $paid_off = $incoming->paid_off += $install->installment;
+        $paid_off = $incoming->paid_off -= $request->installment;
+        if ($paid_off == 0) {
+            $incoming->payment_status = 'lunas';
+        } else if ($paid_off > 0) {
+            $incoming->payment_status = 'belum';
+        } else if ($paid_off < 0) {
+            return response()->json([
+                'title' => 'Opss...',
+                'message' => 'Pembayaran cicilan tidak boleh lebih dari total harga',
+            ], 400);
+        }
+        $incoming->save();
+        $installments->update($request->all());
+        return response()->json([
+            'title' => 'Success!',
+            'message' => 'Data cicilan berhasil diperbarui',
         ], 200);
     }
 }

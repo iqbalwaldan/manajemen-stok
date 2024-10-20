@@ -42,15 +42,15 @@
                 <button id="filter-button" class="btn btn-primary">Filter</button>
             </div>
         </div>
-        <table id="table-report" class="">
+        <table id="table-report" class="table table-hover table-striped">
             <thead>
                 <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Tanggal</th>
-                    <th scope="col">Jumlah Barang Keluar</th>
-                    <th scope="col">Keuntungan </th>
-                    <th scope="col">Iklan</th>
-                    <th scope="col">Laba Bersin</th>
+                    <th scope="col" style="min-width: 50px">No</th>
+                    <th scope="col" style="min-width: 150px">Tanggal</th>
+                    <th scope="col" style="min-width: 150px">Jumlah Barang Keluar</th>
+                    <th scope="col" style="min-width: 150px">Keuntungan </th>
+                    <th scope="col" style="min-width: 150px">Iklan</th>
+                    <th scope="col" style="min-width: 150px">Laba Bersin</th>
                 </tr>
             </thead>
         </table>
@@ -122,6 +122,7 @@
             var table = $('#table-report').DataTable({
                 processing: true,
                 serverSide: true,
+                autoWidth: false,
                 ajax: {
                     url: "/report",
                     data: function(d) {
@@ -137,7 +138,7 @@
                     },
                     {
                         data: 'datetime_report',
-                        name: 'datetime_report'
+                        name: 'datetime_report',
                     },
                     {
                         data: 'total_stock_out',

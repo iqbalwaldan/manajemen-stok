@@ -9,23 +9,19 @@
 
 @section('content')
     <div class="ml-[60px] md:ml-64">
-        <div class="">
-            <div class="">
-                <table id="table-balance-stock" class="">
-                    <thead>
-                        <tr>
-                            <th scope="col">No</th>
-                            <th scope="col">Tipe</th>
-                            <th scope="col">Warna</th>
-                            <th scope="col">Stok Awal</th>
-                            <th scope="col">Stok Masuk</th>
-                            <th scope="col">Stok Keluar</th>
-                            <th scope="col">Stok Akhir</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+        <table id="table-balance-stock" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" style="min-width: 50px">No</th>
+                    <th scope="col" style="min-width: 340px">Tipe</th>
+                    <th scope="col" style="min-width: 350px">Warna</th>
+                    <th scope="col" style="min-width: 200px">Stok Awal</th>
+                    <th scope="col" style="min-width: 200px">Stok Masuk</th>
+                    <th scope="col" style="min-width: 200px">Stok Keluar</th>
+                    <th scope="col" style="min-width: 200px">Stok Akhir</th>
+                </tr>
+            </thead>
+        </table>
     </div>
 @endsection
 
@@ -35,7 +31,9 @@
             $('#table-balance-stock').DataTable({
                 processing: true,
                 serverSide: true,
-                // paging: false,
+                scrollX: true,
+                autoWidth: true,
+                responsive: true,
                 ajax: "/stock",
                 columns: [{
                         data: null,
@@ -70,7 +68,7 @@
                         data: 'stock_final',
                         name: 'stock_final',
                     }
-                ]
+                ],
             });
 
         });
